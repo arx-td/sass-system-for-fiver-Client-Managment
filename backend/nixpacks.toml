@@ -2,14 +2,15 @@
 nixPkgs = ["nodejs-18_x"]
 
 [phases.install]
-cmds = ["npm install"]
+cmds = ["npm install", "npm install tsc-alias"]
 
 [phases.build]
 cmds = [
   "npx prisma generate",
   "rm -rf dist",
-  "npx tsc --project tsconfig.json --outDir dist --declaration false"
+  "npx tsc --project tsconfig.json --outDir dist --declaration false",
+  "npx tsc-alias -p tsconfig.json --outDir dist"
 ]
 
 [start]
-cmd = "npx prisma migrate deploy && node -r tsconfig-paths/register dist/src/main.js"
+cmd = "npx prisma migrate deploy && node dist/src/main.js"
