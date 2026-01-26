@@ -79,6 +79,10 @@ export interface Project {
   teamLead?: User;
   designerId?: string;
   designer?: User;
+  tasks?: Task[];
+  requirements?: Requirement[];
+  revisions?: Revision[];
+  assets?: DesignAsset[];
   createdAt: string;
   updatedAt: string;
 }
