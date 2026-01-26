@@ -47,15 +47,9 @@ const nextConfig = {
     ];
   },
 
-  // Redirects
+  // Redirects (none needed - landing page handles root)
   async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/login',
-        permanent: false,
-      },
-    ];
+    return [];
   },
 
   // Headers for PWA
