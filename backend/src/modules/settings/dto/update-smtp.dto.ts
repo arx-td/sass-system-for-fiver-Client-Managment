@@ -5,6 +5,7 @@ import {
   IsEmail,
   IsOptional,
   ValidateNested,
+  IsIn,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -37,9 +38,16 @@ export class UpdateSmtpDto {
   @Type(() => SmtpAuthDto)
   auth: SmtpAuthDto;
 
-  @ApiProperty({ example: 'noreply@codereve.com' })
+  @ApiPropertyOptional({ example: 'noreply@codereve.com' })
   @IsEmail()
+  @IsOptional()
   from: string;
+
+  @ApiPropertyOptional({ example: 'gmail', description: 'Email provider: gmail, sendgrid, mailgun, resend, custom' })
+  @IsString()
+  @IsOptional()
+  @IsIn(['gmail', 'sendgrid', 'mailgun', 'resend', 'custom'])
+  provider?: string;
 }
 
 export class TestSmtpDto {
