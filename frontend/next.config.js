@@ -37,14 +37,18 @@ const nextConfig = {
     return config;
   },
 
-  // API Rewrites - Proxy to backend
+  // API Rewrites - Only for local development
   async rewrites() {
-    return [
-      {
-        source: '/api/v1/:path*',
-        destination: 'http://localhost:4000/api/v1/:path*',
-      },
-    ];
+    // In production, frontend calls Railway backend directly via NEXT_PUBLIC_API_URL
+    if (process.env.NODE_ENV === 'development') {
+      return [
+        {
+          source: '/api/v1/:path*',
+          destination: 'http://localhost:4000/api/v1/:path*',
+        },
+      ];
+    }
+    return [];
   },
 
   // Redirects (none needed - landing page handles root)
