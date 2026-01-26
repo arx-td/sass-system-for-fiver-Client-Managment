@@ -15,6 +15,15 @@ import { CreateUserDto, UpdateUserDto, QueryUsersDto, AdminResetPasswordDto } fr
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  private detectProvider(host: string): string {
+    if (!host) return 'custom';
+    if (host.includes('gmail')) return 'gmail';
+    if (host.includes('sendgrid')) return 'sendgrid';
+    if (host.includes('mailgun')) return 'mailgun';
+    if (host.includes('resend')) return 'resend';
+    return 'custom';
+  }
+
   async create(createUserDto: CreateUserDto, invitedById: string) {
     const { email, name, role } = createUserDto;
 
@@ -154,8 +163,12 @@ export class UsersService {
         </div>
       `;
 
-      // Use Resend HTTP API if configured (bypasses SMTP blocking)
-      if (smtpConfig.host === 'smtp.resend.com') {
+      // Detect provider and use appropriate API
+      const provider = smtpConfig.provider || this.detectProvider(smtpConfig.host);
+      console.log(`[EMAIL] Detected provider: ${provider}`);
+
+      // Use Resend HTTP API
+      if (provider === 'resend' || smtpConfig.host === 'smtp.resend.com') {
         console.log('[EMAIL] Using Resend HTTP API...');
         const response = await fetch('https://api.resend.com/emails', {
           method: 'POST',
@@ -177,6 +190,64 @@ export class UsersService {
         }
 
         console.log(`[EMAIL] Invitation email sent successfully to ${email} via Resend API`);
+        return true;
+      }
+
+      // Use SendGrid HTTP API
+      if (provider === 'sendgrid' || smtpConfig.host?.includes('sendgrid')) {
+        console.log('[EMAIL] Using SendGrid HTTP API...');
+        const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${smtpConfig.auth.pass}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            personalizations: [{ to: [{ email }] }],
+            from: { email: smtpConfig.from || smtpConfig.auth.user },
+            subject: 'Welcome to CodeReve - You\'ve Been Invited!',
+            content: [{ type: 'text/html', value: emailHtml }],
+          }),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('[SENDGRID] Error response:', errorText);
+          throw new Error(`SendGrid API error: ${response.status}`);
+        }
+
+        console.log(`[EMAIL] Invitation email sent successfully to ${email} via SendGrid API`);
+        return true;
+      }
+
+      // Use Mailgun HTTP API
+      if (provider === 'mailgun' || smtpConfig.host?.includes('mailgun')) {
+        console.log('[EMAIL] Using Mailgun HTTP API...');
+        const domain = smtpConfig.auth.user; // Domain is stored in username field
+        const apiKey = smtpConfig.auth.pass;
+
+        const formData = new URLSearchParams();
+        formData.append('from', smtpConfig.from || `CodeReve <noreply@${domain}>`);
+        formData.append('to', email);
+        formData.append('subject', 'Welcome to CodeReve - You\'ve Been Invited!');
+        formData.append('html', emailHtml);
+
+        const response = await fetch(`https://api.mailgun.net/v3/${domain}/messages`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Basic ${Buffer.from(`api:${apiKey}`).toString('base64')}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData.toString(),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          console.error('[MAILGUN] Error response:', errorData);
+          throw new Error(errorData.message || `Mailgun API error: ${response.status}`);
+        }
+
+        console.log(`[EMAIL] Invitation email sent successfully to ${email} via Mailgun API`);
         return true;
       }
 

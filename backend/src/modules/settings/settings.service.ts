@@ -7,6 +7,15 @@ import * as nodemailer from 'nodemailer';
 export class SettingsService {
   constructor(private prisma: PrismaService) {}
 
+  private detectProvider(host: string): string {
+    if (!host) return 'custom';
+    if (host.includes('gmail')) return 'gmail';
+    if (host.includes('sendgrid')) return 'sendgrid';
+    if (host.includes('mailgun')) return 'mailgun';
+    if (host.includes('resend')) return 'resend';
+    return 'custom';
+  }
+
   async getSmtpSettings() {
     const setting = await this.prisma.systemSetting.findUnique({
       where: { key: 'smtp_config' },
@@ -110,8 +119,13 @@ export class SettingsService {
         </div>
       `;
 
-      // Use Resend HTTP API if configured (bypasses SMTP blocking)
-      if (smtpConfig.host === 'smtp.resend.com') {
+      // Detect provider
+      const provider = smtpConfig.provider || this.detectProvider(smtpConfig.host);
+      console.log(`[EMAIL TEST] Using provider: ${provider}`);
+
+      // Use Resend HTTP API
+      if (provider === 'resend' || smtpConfig.host === 'smtp.resend.com') {
+        console.log('[EMAIL TEST] Using Resend HTTP API...');
         const response = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
@@ -121,7 +135,7 @@ export class SettingsService {
           body: JSON.stringify({
             from: smtpConfig.from || 'onboarding@resend.dev',
             to: [testEmail],
-            subject: 'CodeReve - SMTP Test Email',
+            subject: 'CodeReve - Email Test',
             html: emailHtml,
           }),
         });
@@ -137,7 +151,69 @@ export class SettingsService {
         };
       }
 
-      // Fallback to SMTP for other providers
+      // Use SendGrid HTTP API
+      if (provider === 'sendgrid' || smtpConfig.host?.includes('sendgrid')) {
+        console.log('[EMAIL TEST] Using SendGrid HTTP API...');
+        const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${smtpConfig.auth.pass}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            personalizations: [{ to: [{ email: testEmail }] }],
+            from: { email: smtpConfig.from || smtpConfig.auth.user },
+            subject: 'CodeReve - Email Test',
+            content: [{ type: 'text/html', value: emailHtml }],
+          }),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('[SENDGRID] Error response:', errorText);
+          throw new Error(`SendGrid API error: ${response.status} - ${errorText}`);
+        }
+
+        return {
+          success: true,
+          message: `Test email sent successfully to ${testEmail} via SendGrid`,
+        };
+      }
+
+      // Use Mailgun HTTP API
+      if (provider === 'mailgun' || smtpConfig.host?.includes('mailgun')) {
+        console.log('[EMAIL TEST] Using Mailgun HTTP API...');
+        const domain = smtpConfig.auth.user; // Domain is stored in username field
+        const apiKey = smtpConfig.auth.pass;
+
+        const formData = new URLSearchParams();
+        formData.append('from', smtpConfig.from || `CodeReve <noreply@${domain}>`);
+        formData.append('to', testEmail);
+        formData.append('subject', 'CodeReve - Email Test');
+        formData.append('html', emailHtml);
+
+        const response = await fetch(`https://api.mailgun.net/v3/${domain}/messages`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Basic ${Buffer.from(`api:${apiKey}`).toString('base64')}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData.toString(),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          console.error('[MAILGUN] Error response:', errorData);
+          throw new Error(errorData.message || `Mailgun API error: ${response.status}`);
+        }
+
+        return {
+          success: true,
+          message: `Test email sent successfully to ${testEmail} via Mailgun`,
+        };
+      }
+
+      // Fallback to SMTP for Gmail and custom providers
       const transporter = nodemailer.createTransport({
         host: smtpConfig.host,
         port: smtpConfig.port || 587,

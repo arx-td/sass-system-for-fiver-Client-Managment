@@ -14,6 +14,53 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { apiGet, apiPost, getErrorMessage } from '@/lib/api';
 import { SmtpSettings, GeneralSettings, N8nSettings } from '@/types';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+type EmailProvider = 'gmail' | 'sendgrid' | 'mailgun' | 'resend' | 'custom';
+
+const emailProviderPresets: Record<EmailProvider, { host: string; port: number; secure: boolean; label: string; description: string }> = {
+  gmail: {
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    label: 'Gmail (App Password)',
+    description: 'Use Gmail with an App Password. Go to Google Account → Security → 2-Step Verification → App passwords',
+  },
+  sendgrid: {
+    host: 'api.sendgrid.com',
+    port: 443,
+    secure: true,
+    label: 'SendGrid',
+    description: 'Use SendGrid API. Get your API key from SendGrid Dashboard → Settings → API Keys',
+  },
+  mailgun: {
+    host: 'api.mailgun.net',
+    port: 443,
+    secure: true,
+    label: 'Mailgun',
+    description: 'Use Mailgun API. Get your API key from Mailgun Dashboard → API Keys',
+  },
+  resend: {
+    host: 'smtp.resend.com',
+    port: 465,
+    secure: true,
+    label: 'Resend',
+    description: 'Use Resend API. Note: Free tier only sends to your own email unless you verify a domain',
+  },
+  custom: {
+    host: '',
+    port: 587,
+    secure: false,
+    label: 'Custom SMTP',
+    description: 'Configure your own SMTP server',
+  },
+};
 
 interface NotificationSettings {
   soundEnabled: boolean;
@@ -54,8 +101,9 @@ export default function SettingsPage() {
   const [testing, setTesting] = useState(false);
 
   // SMTP Settings
+  const [emailProvider, setEmailProvider] = useState<EmailProvider>('gmail');
   const [smtpSettings, setSmtpSettings] = useState<SmtpSettings>({
-    host: '',
+    host: 'smtp.gmail.com',
     port: 587,
     secure: false,
     auth: {
@@ -151,11 +199,40 @@ export default function SettingsPage() {
     }
   };
 
+  const handleProviderChange = (provider: EmailProvider) => {
+    setEmailProvider(provider);
+    const preset = emailProviderPresets[provider];
+    setSmtpSettings({
+      ...smtpSettings,
+      host: preset.host,
+      port: preset.port,
+      secure: preset.secure,
+    });
+  };
+
+  // Detect provider from host when settings are loaded
+  useEffect(() => {
+    if (smtpSettings.host) {
+      if (smtpSettings.host.includes('gmail')) {
+        setEmailProvider('gmail');
+      } else if (smtpSettings.host.includes('sendgrid')) {
+        setEmailProvider('sendgrid');
+      } else if (smtpSettings.host.includes('mailgun')) {
+        setEmailProvider('mailgun');
+      } else if (smtpSettings.host.includes('resend')) {
+        setEmailProvider('resend');
+      } else {
+        setEmailProvider('custom');
+      }
+    }
+  }, [smtpSettings.host]);
+
   const handleSaveSmtp = async () => {
     try {
       setSaving(true);
-      await apiPost('/settings/smtp', smtpSettings);
-      toast.success('SMTP settings saved successfully');
+      // Include provider in settings for backend to know which API to use
+      await apiPost('/settings/smtp', { ...smtpSettings, provider: emailProvider });
+      toast.success('Email settings saved successfully');
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {
@@ -407,15 +484,90 @@ export default function SettingsPage() {
         <TabsContent value="smtp">
           <Card>
             <CardHeader>
-              <CardTitle>SMTP Configuration</CardTitle>
+              <CardTitle>Email Configuration</CardTitle>
               <CardDescription>
-                Configure email server settings for sending notifications and invitations.
+                Configure email service for sending notifications and invitations.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* Provider Selector */}
+              <div className="grid gap-2">
+                <Label>Email Provider</Label>
+                <Select value={emailProvider} onValueChange={(v) => handleProviderChange(v as EmailProvider)}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select email provider" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="gmail">
+                      <span className="font-medium">Gmail (App Password)</span>
+                      <span className="text-muted-foreground ml-2">- Recommended, Easy Setup</span>
+                    </SelectItem>
+                    <SelectItem value="sendgrid">
+                      <span className="font-medium">SendGrid</span>
+                      <span className="text-muted-foreground ml-2">- 100 free emails/day</span>
+                    </SelectItem>
+                    <SelectItem value="mailgun">
+                      <span className="font-medium">Mailgun</span>
+                      <span className="text-muted-foreground ml-2">- 5,000 free emails/month</span>
+                    </SelectItem>
+                    <SelectItem value="resend">
+                      <span className="font-medium">Resend</span>
+                      <span className="text-muted-foreground ml-2">- Requires domain verification</span>
+                    </SelectItem>
+                    <SelectItem value="custom">
+                      <span className="font-medium">Custom SMTP</span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-muted-foreground">
+                  {emailProviderPresets[emailProvider].description}
+                </p>
+              </div>
+
+              {/* Provider-specific setup instructions */}
+              {emailProvider === 'gmail' && (
+                <div className="rounded-lg border bg-blue-50 dark:bg-blue-950 p-4">
+                  <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Gmail Setup Instructions</h4>
+                  <ol className="text-sm text-blue-800 dark:text-blue-200 space-y-1 list-decimal list-inside">
+                    <li>Go to your Google Account → Security</li>
+                    <li>Enable 2-Step Verification if not already enabled</li>
+                    <li>Go to Security → 2-Step Verification → App passwords</li>
+                    <li>Create a new App password for "Mail"</li>
+                    <li>Use your Gmail as Username and the 16-character App password as Password</li>
+                  </ol>
+                </div>
+              )}
+
+              {emailProvider === 'sendgrid' && (
+                <div className="rounded-lg border bg-blue-50 dark:bg-blue-950 p-4">
+                  <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">SendGrid Setup Instructions</h4>
+                  <ol className="text-sm text-blue-800 dark:text-blue-200 space-y-1 list-decimal list-inside">
+                    <li>Sign up at <a href="https://sendgrid.com" target="_blank" className="underline">sendgrid.com</a></li>
+                    <li>Go to Settings → API Keys → Create API Key</li>
+                    <li>Select "Full Access" or "Restricted Access" with Mail Send permission</li>
+                    <li>Use "apikey" as Username and your API key as Password</li>
+                    <li>Verify a sender email in Settings → Sender Authentication</li>
+                  </ol>
+                </div>
+              )}
+
+              {emailProvider === 'mailgun' && (
+                <div className="rounded-lg border bg-blue-50 dark:bg-blue-950 p-4">
+                  <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Mailgun Setup Instructions</h4>
+                  <ol className="text-sm text-blue-800 dark:text-blue-200 space-y-1 list-decimal list-inside">
+                    <li>Sign up at <a href="https://mailgun.com" target="_blank" className="underline">mailgun.com</a></li>
+                    <li>Go to Send → Domains and verify your domain (or use sandbox)</li>
+                    <li>Go to Settings → API Keys → Copy your Private API key</li>
+                    <li>Use your domain as Username (e.g., mg.yourdomain.com) and API key as Password</li>
+                  </ol>
+                </div>
+              )}
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="smtpHost">SMTP Host</Label>
+                  <Label htmlFor="smtpHost">
+                    {emailProvider === 'custom' ? 'SMTP Host' : 'API Host'}
+                  </Label>
                   <Input
                     id="smtpHost"
                     placeholder="smtp.example.com"
@@ -423,10 +575,12 @@ export default function SettingsPage() {
                     onChange={(e) =>
                       setSmtpSettings({ ...smtpSettings, host: e.target.value })
                     }
+                    disabled={emailProvider !== 'custom'}
+                    className={emailProvider !== 'custom' ? 'bg-muted' : ''}
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="smtpPort">SMTP Port</Label>
+                  <Label htmlFor="smtpPort">Port</Label>
                   <Input
                     id="smtpPort"
                     type="number"
@@ -438,16 +592,30 @@ export default function SettingsPage() {
                         port: parseInt(e.target.value) || 587,
                       })
                     }
+                    disabled={emailProvider !== 'custom'}
+                    className={emailProvider !== 'custom' ? 'bg-muted' : ''}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="smtpUser">Username</Label>
+                  <Label htmlFor="smtpUser">
+                    {emailProvider === 'gmail' ? 'Gmail Address' :
+                     emailProvider === 'sendgrid' ? 'Username (use "apikey")' :
+                     emailProvider === 'mailgun' ? 'Domain' :
+                     emailProvider === 'resend' ? 'Username (use "resend")' :
+                     'Username'}
+                  </Label>
                   <Input
                     id="smtpUser"
-                    placeholder="your-email@example.com"
+                    placeholder={
+                      emailProvider === 'gmail' ? 'your-email@gmail.com' :
+                      emailProvider === 'sendgrid' ? 'apikey' :
+                      emailProvider === 'mailgun' ? 'mg.yourdomain.com' :
+                      emailProvider === 'resend' ? 'resend' :
+                      'your-email@example.com'
+                    }
                     value={smtpSettings.auth.user}
                     onChange={(e) =>
                       setSmtpSettings({
@@ -458,7 +626,13 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="smtpPass">Password</Label>
+                  <Label htmlFor="smtpPass">
+                    {emailProvider === 'gmail' ? 'App Password (16 chars)' :
+                     emailProvider === 'sendgrid' ? 'API Key' :
+                     emailProvider === 'mailgun' ? 'API Key' :
+                     emailProvider === 'resend' ? 'API Key' :
+                     'Password'}
+                  </Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input

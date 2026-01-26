@@ -38,7 +38,8 @@
       "Bash(git branch:*)",
       "Bash(git push:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd comprehensive README documentation\n\n- Project overview and key features\n- Complete tech stack documentation\n- System architecture diagram\n- Role-based access control matrix\n- Project structure explanation\n- Getting started guide\n- Environment configuration\n- Database setup instructions\n- Deployment guides \\(Vercel, Railway, Render\\)\n- API documentation overview\n- WebSocket events reference\n- n8n automation setup\n- Desktop app build instructions\n- Troubleshooting guide\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(dir \"c:\\\\Users\\\\Abdullah Rahim\\\\OneDrive\\\\Desktop\\\\codereve mangment system\\\\backend\\\\prisma\\\\migrations\")"
     ]
   }
 }
