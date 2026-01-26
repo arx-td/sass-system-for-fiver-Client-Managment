@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Routes that don't require authentication
-const publicRoutes = ['/login', '/forgot-password', '/reset-password'];
+const publicRoutes = ['/', '/login', '/forgot-password', '/reset-password'];
 
 // Role-based route access
 const roleRoutes: Record<string, string[]> = {
