@@ -7,9 +7,10 @@ cmds = ["npm install"]
 [phases.build]
 cmds = [
   "npx prisma generate",
-  "npx nest build",
+  "./node_modules/.bin/nest build",
+  "ls -la",
   "ls -la dist/"
 ]
 
 [start]
-cmd = "node dist/main.js"
+cmd = "npx prisma migrate deploy && node dist/main.js"
