@@ -7,8 +7,7 @@ cmds = ["npm install"]
 [phases.build]
 cmds = [
   "npx prisma generate",
-  "./node_modules/.bin/nest build",
-  "ls -la",
+  "npx tsc -p tsconfig.build.json",
   "ls -la dist/"
 ]
 
