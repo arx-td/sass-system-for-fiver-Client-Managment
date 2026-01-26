@@ -102,7 +102,82 @@ export class UsersService {
         return;
       }
 
-      // Create transporter with timeout settings
+      // Get frontend URL from environment or use default
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      const resetPasswordLink = `${frontendUrl}/reset-password?token=${resetToken}`;
+
+      console.log(`[EMAIL] Reset link: ${resetPasswordLink}`);
+
+      const emailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #0f172a; margin: 0;">CodeReve</h1>
+            <p style="color: #64748b; margin: 5px 0;">Management System</p>
+          </div>
+
+          <h2 style="color: #0f172a;">Welcome, ${name}!</h2>
+
+          <p style="color: #334155; line-height: 1.6;">
+            You've been invited to join the CodeReve Management System. To get started,
+            please set up your password by clicking the button below.
+          </p>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetPasswordLink}"
+               style="background-color: #0f172a; color: white; padding: 12px 30px;
+                      text-decoration: none; border-radius: 6px; display: inline-block;
+                      font-weight: 500;">
+              Set Up Your Password
+            </a>
+          </div>
+
+          <p style="color: #64748b; font-size: 14px;">
+            Or copy and paste this link into your browser:
+          </p>
+          <p style="color: #3b82f6; font-size: 14px; word-break: break-all;">
+            ${resetPasswordLink}
+          </p>
+
+          <p style="color: #64748b; font-size: 14px; margin-top: 20px;">
+            This link will expire in 7 days. If you didn't expect this invitation,
+            please ignore this email.
+          </p>
+
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
+
+          <p style="color: #94a3b8; font-size: 12px; text-align: center;">
+            This email was sent from CodeReve Management System.
+          </p>
+        </div>
+      `;
+
+      // Use Resend HTTP API if configured (bypasses SMTP blocking)
+      if (smtpConfig.host === 'smtp.resend.com') {
+        console.log('[EMAIL] Using Resend HTTP API...');
+        const response = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${smtpConfig.auth.pass}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: smtpConfig.from || 'onboarding@resend.dev',
+            to: [email],
+            subject: 'Welcome to CodeReve - You\'ve Been Invited!',
+            html: emailHtml,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to send email via Resend API');
+        }
+
+        console.log(`[EMAIL] Invitation email sent successfully to ${email} via Resend API`);
+        return;
+      }
+
+      // Fallback to SMTP for other providers
       const transporter = nodemailer.createTransport({
         host: smtpConfig.host,
         port: smtpConfig.port || 587,
@@ -111,64 +186,16 @@ export class UsersService {
           user: smtpConfig.auth.user,
           pass: smtpConfig.auth.pass,
         },
-        connectionTimeout: 10000, // 10 seconds
+        connectionTimeout: 10000,
         greetingTimeout: 10000,
         socketTimeout: 15000,
       });
 
-      // Get frontend URL from environment or use default
-      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-      const resetPasswordLink = `${frontendUrl}/reset-password?token=${resetToken}`;
-
-      console.log(`[EMAIL] Reset link: ${resetPasswordLink}`);
-
-      // Send invitation email
       await transporter.sendMail({
         from: smtpConfig.from || smtpConfig.auth.user,
         to: email,
         subject: 'Welcome to CodeReve - You\'ve Been Invited!',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #0f172a; margin: 0;">CodeReve</h1>
-              <p style="color: #64748b; margin: 5px 0;">Management System</p>
-            </div>
-
-            <h2 style="color: #0f172a;">Welcome, ${name}!</h2>
-
-            <p style="color: #334155; line-height: 1.6;">
-              You've been invited to join the CodeReve Management System. To get started,
-              please set up your password by clicking the button below.
-            </p>
-
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${resetPasswordLink}"
-                 style="background-color: #0f172a; color: white; padding: 12px 30px;
-                        text-decoration: none; border-radius: 6px; display: inline-block;
-                        font-weight: 500;">
-                Set Up Your Password
-              </a>
-            </div>
-
-            <p style="color: #64748b; font-size: 14px;">
-              Or copy and paste this link into your browser:
-            </p>
-            <p style="color: #3b82f6; font-size: 14px; word-break: break-all;">
-              ${resetPasswordLink}
-            </p>
-
-            <p style="color: #64748b; font-size: 14px; margin-top: 20px;">
-              This link will expire in 7 days. If you didn't expect this invitation,
-              please ignore this email.
-            </p>
-
-            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
-
-            <p style="color: #94a3b8; font-size: 12px; text-align: center;">
-              This email was sent from CodeReve Management System.
-            </p>
-          </div>
-        `,
+        html: emailHtml,
       });
 
       console.log(`[EMAIL] Invitation email sent successfully to ${email}`);

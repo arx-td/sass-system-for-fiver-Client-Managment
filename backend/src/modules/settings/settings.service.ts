@@ -98,7 +98,46 @@ export class SettingsService {
     }
 
     try {
-      // Create transporter with saved SMTP settings and timeout
+      const emailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #0f172a;">SMTP Configuration Test</h2>
+          <p>This is a test email from CodeReve Management System.</p>
+          <p>If you received this email, your SMTP configuration is working correctly!</p>
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+          <p style="color: #64748b; font-size: 12px;">
+            This email was sent from CodeReve Management System.
+          </p>
+        </div>
+      `;
+
+      // Use Resend HTTP API if configured (bypasses SMTP blocking)
+      if (smtpConfig.host === 'smtp.resend.com') {
+        const response = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${smtpConfig.auth.pass}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: smtpConfig.from || 'onboarding@resend.dev',
+            to: [testEmail],
+            subject: 'CodeReve - SMTP Test Email',
+            html: emailHtml,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to send email via Resend API');
+        }
+
+        return {
+          success: true,
+          message: `Test email sent successfully to ${testEmail}`,
+        };
+      }
+
+      // Fallback to SMTP for other providers
       const transporter = nodemailer.createTransport({
         host: smtpConfig.host,
         port: smtpConfig.port || 587,
@@ -107,27 +146,16 @@ export class SettingsService {
           user: smtpConfig.auth.user,
           pass: smtpConfig.auth.pass,
         },
-        connectionTimeout: 10000, // 10 seconds
+        connectionTimeout: 10000,
         greetingTimeout: 10000,
         socketTimeout: 15000,
       });
 
-      // Send test email
       await transporter.sendMail({
         from: smtpConfig.from || smtpConfig.auth.user,
         to: testEmail,
         subject: 'CodeReve - SMTP Test Email',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #0f172a;">SMTP Configuration Test</h2>
-            <p>This is a test email from CodeReve Management System.</p>
-            <p>If you received this email, your SMTP configuration is working correctly!</p>
-            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-            <p style="color: #64748b; font-size: 12px;">
-              This email was sent from CodeReve Management System.
-            </p>
-          </div>
-        `,
+        html: emailHtml,
       });
 
       return {
