@@ -70,7 +70,11 @@ export class UploadService {
           if (error) {
             console.error('[CLOUDINARY] Upload error:', error);
             reject(new BadRequestException('Failed to upload file to cloud storage'));
+          } else if (!result || !result.secure_url) {
+            console.error('[CLOUDINARY] No result returned from upload');
+            reject(new BadRequestException('Failed to get URL from cloud storage'));
           } else {
+            console.log('[CLOUDINARY] Upload successful:', result.secure_url);
             resolve({
               url: result.secure_url,
               fileName: result.public_id,

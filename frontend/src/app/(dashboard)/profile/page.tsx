@@ -99,9 +99,15 @@ export default function ProfilePage() {
     setUploadingAvatar(true);
     try {
       const uploadedFile = await uploadFile('/upload/single', file);
-      setAvatarUrl(uploadedFile.url);
-      toast.success('Avatar uploaded successfully');
+      console.log('[AVATAR] Upload response:', uploadedFile);
+      if (uploadedFile.url) {
+        setAvatarUrl(uploadedFile.url);
+        toast.success('Avatar uploaded successfully');
+      } else {
+        toast.error('No URL returned from upload');
+      }
     } catch (error) {
+      console.error('[AVATAR] Upload error:', error);
       toast.error('Failed to upload avatar');
     } finally {
       setUploadingAvatar(false);
@@ -116,13 +122,18 @@ export default function ProfilePage() {
 
     setSaving(true);
     try {
+      console.log('[PROFILE] Saving with avatar URL:', avatarUrl);
       const response = await apiPatch<{ message: string; user: UserProfile }>('/auth/profile', {
         name: name.trim(),
         bio: bio.trim() || null,
         avatar: avatarUrl,
       });
 
+      console.log('[PROFILE] Save response:', response);
       setProfile(response.user);
+
+      // Update avatarUrl state from server response to stay in sync
+      setAvatarUrl(response.user.avatar);
 
       // Update auth store with new user data
       if (user) {
@@ -135,6 +146,7 @@ export default function ProfilePage() {
 
       toast.success('Profile updated successfully');
     } catch (error) {
+      console.error('[PROFILE] Save error:', error);
       toast.error(getErrorMessage(error));
     } finally {
       setSaving(false);
@@ -255,12 +267,23 @@ export default function ProfilePage() {
               </CardHeader>
               <CardContent className="flex flex-col items-center space-y-4">
                 <div className="relative">
-                  <Avatar className="h-32 w-32 cursor-pointer hover:opacity-80 transition-opacity">
-                    <AvatarImage src={avatarUrl || undefined} alt={name} />
-                    <AvatarFallback className="text-2xl bg-primary/10">
-                      {getInitials(name || 'User')}
-                    </AvatarFallback>
-                  </Avatar>
+                  {avatarUrl ? (
+                    <img
+                      src={avatarUrl}
+                      alt={name}
+                      className="h-32 w-32 rounded-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                      onError={(e) => {
+                        console.error('[AVATAR] Image failed to load:', avatarUrl);
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <Avatar className="h-32 w-32 cursor-pointer hover:opacity-80 transition-opacity">
+                      <AvatarFallback className="text-2xl bg-primary/10">
+                        {getInitials(name || 'User')}
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
