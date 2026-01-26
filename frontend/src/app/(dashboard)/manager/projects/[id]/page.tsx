@@ -1613,9 +1613,9 @@ export default function ManagerProjectDetailPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {Array.from(new Set(project.tasks.filter((t: any) => t.assignedTo).map((t: any) => JSON.stringify(t.assignedTo)))).map((devStr: any, idx: number) => {
+                    {Array.from(new Set((project.tasks || []).filter((t: any) => t.assignedTo).map((t: any) => JSON.stringify(t.assignedTo)))).map((devStr: any, idx: number) => {
                       const dev = JSON.parse(devStr);
-                      const devTasks = project.tasks.filter((t: any) => t.assignedTo?.id === dev.id);
+                      const devTasks = (project.tasks || []).filter((t: any) => t.assignedTo?.id === dev.id);
                       const completedTasks = devTasks.filter((t: any) => t.status === 'APPROVED').length;
                       const devProgress = devTasks.length > 0 ? Math.round((completedTasks / devTasks.length) * 100) : 0;
                       return (
