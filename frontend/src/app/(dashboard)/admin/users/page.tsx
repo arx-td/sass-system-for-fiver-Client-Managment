@@ -141,8 +141,12 @@ export default function UsersPage() {
 
     try {
       setInviting(true);
-      await apiPost('/users/invite', inviteForm);
-      toast.success('Invitation sent successfully');
+      const response = await apiPost<{ message: string; emailSent?: boolean }>('/users/invite', inviteForm);
+      if (response.emailSent === false) {
+        toast.warning(`User created but invitation email could not be sent. Please check SMTP settings or use "Resend Invitation".`);
+      } else {
+        toast.success(`Invitation email sent to ${inviteForm.email}`);
+      }
       setInviteDialogOpen(false);
       setInviteForm({ email: '', name: '', role: 'DEVELOPER' });
       fetchUsers();
@@ -168,6 +172,19 @@ export default function UsersPage() {
       await apiPost(`/users/${userId}/activate`);
       toast.success('User activated');
       fetchUsers();
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
+  };
+
+  const handleResendInvitation = async (userId: string, userName: string) => {
+    try {
+      const response = await apiPost<{ message: string; emailSent?: boolean }>(`/users/${userId}/resend-invitation`);
+      if (response.emailSent === false) {
+        toast.warning(`Invitation created but email could not be sent. Please check SMTP settings.`);
+      } else {
+        toast.success(`Invitation email resent to ${userName}`);
+      }
     } catch (error) {
       toast.error(getErrorMessage(error));
     }
@@ -653,7 +670,9 @@ export default function UsersPage() {
                           Reset Password
                         </DropdownMenuItem>
                         {user.status === 'INVITED' && (
-                          <DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleResendInvitation(user.id, user.name)}
+                          >
                             <Mail className="mr-2 h-4 w-4" />
                             Resend Invitation
                           </DropdownMenuItem>

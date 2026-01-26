@@ -61,15 +61,18 @@ export class UsersService {
     });
 
     // Send invitation email
-    await this.sendInvitationEmail(email, name, resetToken);
+    const emailSent = await this.sendInvitationEmail(email, name, resetToken);
 
     return {
       user,
-      message: 'User created successfully. Invitation email has been sent.',
+      message: emailSent
+        ? 'User created successfully. Invitation email has been sent.'
+        : 'User created successfully. Email could not be sent - please check SMTP settings.',
+      emailSent,
     };
   }
 
-  private async sendInvitationEmail(email: string, name: string, resetToken: string) {
+  private async sendInvitationEmail(email: string, name: string, resetToken: string): Promise<boolean> {
     try {
       console.log(`[EMAIL] Attempting to send invitation email to: ${email}`);
 
@@ -81,7 +84,7 @@ export class UsersService {
       if (!smtpSetting) {
         console.warn('[EMAIL] SMTP not configured. Invitation email not sent for:', email);
         console.log(`[EMAIL] Invitation token for ${email}: ${resetToken}`);
-        return;
+        return false;
       }
 
       const smtpConfig = smtpSetting.value as any;
@@ -92,14 +95,14 @@ export class UsersService {
         console.warn('[EMAIL] SMTP settings incomplete. Invitation email not sent for:', email);
         console.log(`[EMAIL] Missing: host=${!smtpConfig.host}, user=${!smtpConfig.auth?.user}, pass=${!smtpConfig.auth?.pass}`);
         console.log(`[EMAIL] Invitation token for ${email}: ${resetToken}`);
-        return;
+        return false;
       }
 
       // Check if password is masked (bug where masked password was saved)
       if (smtpConfig.auth.pass === '********') {
         console.error('[EMAIL] SMTP password is masked! Please re-enter the password in Settings.');
         console.log(`[EMAIL] Invitation token for ${email}: ${resetToken}`);
-        return;
+        return false;
       }
 
       // Get frontend URL from environment or use default
@@ -174,7 +177,7 @@ export class UsersService {
         }
 
         console.log(`[EMAIL] Invitation email sent successfully to ${email} via Resend API`);
-        return;
+        return true;
       }
 
       // Fallback to SMTP for other providers
@@ -199,10 +202,12 @@ export class UsersService {
       });
 
       console.log(`[EMAIL] Invitation email sent successfully to ${email}`);
+      return true;
     } catch (error) {
       console.error('[EMAIL] Failed to send invitation email:', error.message);
       console.error('[EMAIL] Full error:', error);
       console.log(`[EMAIL] Invitation token for ${email}: ${resetToken}`);
+      return false;
     }
   }
 
@@ -444,10 +449,13 @@ export class UsersService {
     });
 
     // Send invitation email
-    await this.sendInvitationEmail(user.email, user.name, resetToken);
+    const emailSent = await this.sendInvitationEmail(user.email, user.name, resetToken);
 
     return {
-      message: 'Invitation has been resent',
+      message: emailSent
+        ? 'Invitation email has been resent successfully'
+        : 'Invitation created but email could not be sent - please check SMTP settings',
+      emailSent,
     };
   }
 
