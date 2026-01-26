@@ -756,8 +756,10 @@ This project is **proprietary** and for internal use only.
 
 ## Support
 
-For issues and feature requests, please contact the development team or create an issue on GitHub.
+For issues and feature requests, please contact:
+- **Email:** arxthedesigner2021@gmail.com
+- **GitHub Issues:** [Create an issue](https://github.com/arx-td/sass-system-for-fiver-Client-Managment/issues)
 
 ---
 
-**Built with by CodeReve Team**
+**Built by Abdullah Rahim**
