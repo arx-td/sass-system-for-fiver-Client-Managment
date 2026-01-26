@@ -2,10 +2,13 @@
 nixPkgs = ["nodejs-18_x"]
 
 [phases.install]
-cmds = ["npm install"]
+cmds = ["npm ci || npm install"]
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = [
+    "npm run build",
+    "ls -la dist/ || echo 'dist folder not found'"
+]
 
 [start]
-cmd = "npm run start:prod"
+cmd = "node dist/main.js"
