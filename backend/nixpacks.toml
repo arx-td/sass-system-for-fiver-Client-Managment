@@ -8,8 +8,9 @@ cmds = ["npm install"]
 cmds = [
   "npx prisma generate",
   "rm -rf dist",
-  "npx tsc -p tsconfig.build.json --listEmittedFiles",
-  "ls -la dist/"
+  "npx tsc --project tsconfig.json --outDir dist --declaration false",
+  "ls -la dist/",
+  "ls dist/main.js"
 ]
 
 [start]
