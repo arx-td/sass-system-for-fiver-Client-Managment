@@ -56,6 +56,6 @@ export const config = {
      * - public files
      * - static assets (.png, .jpg, .svg, .ico, .json, .js in public)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|manifest.json|sw.js|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.ico$).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|manifest.json|sw.js|grid.svg|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.ico$).+)',
   ],
 };
