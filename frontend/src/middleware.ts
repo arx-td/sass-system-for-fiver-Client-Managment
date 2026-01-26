@@ -16,8 +16,13 @@ const roleRoutes: Record<string, string[]> = {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow public routes
-  if (publicRoutes.some((route) => pathname.startsWith(route))) {
+  // Allow exact root path (landing page)
+  if (pathname === '/') {
+    return NextResponse.next();
+  }
+
+  // Allow other public routes
+  if (publicRoutes.some((route) => route !== '/' && pathname.startsWith(route))) {
     return NextResponse.next();
   }
 
@@ -25,7 +30,7 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token')?.value;
 
   // If no token, redirect to login
-  if (!token && pathname !== '/login') {
+  if (!token) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
