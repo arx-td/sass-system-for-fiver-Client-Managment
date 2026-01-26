@@ -1,0 +1,571 @@
+// CodeReve Management System - Database Schema
+// Internal SaaS for WordPress & Web Development Agency
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  TEAM_LEAD
+  DEVELOPER
+  DESIGNER
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  INVITED
+}
+
+enum ProjectStatus {
+  NEW
+  REQUIREMENTS_PENDING
+  IN_PROGRESS
+  REVIEW
+  CLIENT_REVIEW
+  COMPLETED
+  ON_HOLD
+  CANCELLED
+}
+
+enum ProjectComplexity {
+  SIMPLE
+  MEDIUM
+  COMPLEX
+}
+
+enum ProjectPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskStatus {
+  ASSIGNED
+  IN_PROGRESS
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum AssetType {
+  LOGO
+  BANNER
+  IMAGE
+  ICON
+  OTHER
+}
+
+enum AssetStatus {
+  REQUESTED
+  IN_PROGRESS
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum RequirementStatus {
+  DRAFT
+  APPROVED
+}
+
+enum RevisionStatus {
+  PENDING
+  IN_PROGRESS
+  SUBMITTED
+  COMPLETED
+}
+
+enum DeveloperTier {
+  TRAINEE
+  JUNIOR
+  MID
+  SENIOR
+  ELITE
+}
+
+// ============================================
+// MODELS
+// ============================================
+
+/// User model - All system users (Admin, Manager, Team Lead, Developer, Designer)
+/// Users are ONLY created by Admin - no public signup
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String     @map("password_hash")
+  name         String
+  avatar       String?
+  bio          String?    @db.Text
+  role         UserRole
+  status       UserStatus @default(INVITED)
+
+  // Developer Tier System (only for DEVELOPER role)
+  tier                DeveloperTier? @default(TRAINEE)
+  completedProjects   Int            @default(0) @map("completed_projects")
+  averageRating       Float          @default(0) @map("average_rating")
+  totalReviews        Int            @default(0) @map("total_reviews")
+
+  // Who invited this user
+  invitedById  String? @map("invited_by_id")
+  invitedBy    User?   @relation("UserInvites", fields: [invitedById], references: [id])
+  invitedUsers User[]  @relation("UserInvites")
+
+  // Timestamps
+  lastLoginAt DateTime? @map("last_login_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Password reset
+  resetToken       String?   @unique @map("reset_token")
+  resetTokenExpiry DateTime? @map("reset_token_expiry")
+
+  // Relations - Projects
+  managedProjects  Project[] @relation("ProjectManager")
+  ledProjects      Project[] @relation("ProjectTeamLead")
+  designedProjects Project[] @relation("ProjectDesigner")
+  createdProjects  Project[] @relation("ProjectCreator")
+
+  // Relations - Tasks
+  assignedTasks Task[] @relation("TaskAssignee")
+  createdTasks  Task[] @relation("TaskCreator")
+
+  // Relations - Assets
+  uploadedAssets  DesignAsset[] @relation("AssetUploader")
+  requestedAssets DesignAsset[] @relation("AssetRequester")
+  approvedAssets  DesignAsset[] @relation("AssetApprover")
+
+  // Relations - Requirements
+  createdRequirements  Requirement[] @relation("RequirementCreator")
+  approvedRequirements Requirement[] @relation("RequirementApprover")
+
+  // Relations - Revisions
+  createdRevisions           Revision[] @relation("RevisionCreator")
+  assignedRevisionsAsTeamLead Revision[] @relation("RevisionTeamLead")
+  assignedRevisionsAsDeveloper Revision[] @relation("RevisionDeveloper")
+
+  // Relations - Chat & Notifications
+  chatMessages  ChatMessage[]
+  notifications Notification[]
+
+  // Relations - Audit
+  auditLogs AuditLog[]
+
+  // Relations - Fiverr Accounts
+  createdFiverrAccounts FiverrAccount[]
+
+  // Relations - Project Reviews (for developers)
+  projectReviews      ProjectReview[] @relation("ReviewedDeveloper")
+  createdReviews      ProjectReview[] @relation("ReviewCreator")
+
+  @@map("users")
+}
+
+/// Fiverr Account - CodeReve operates multiple Fiverr seller accounts
+/// Each project belongs to exactly ONE account
+/// Account name visible ONLY to Admin and Manager
+model FiverrAccount {
+  id           String  @id @default(cuid())
+  accountName  String  @unique @map("account_name")
+  accountEmail String? @map("account_email")
+  isActive     Boolean @default(true) @map("is_active")
+
+  // Who created this account entry
+  createdById String @map("created_by_id")
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  projects Project[]
+
+  @@map("fiverr_accounts")
+}
+
+/// Project - Core entity representing client work
+/// Created by Admin, managed by Manager, executed by Team Lead + Developers
+model Project {
+  id               String            @id @default(cuid())
+  internalName     String            @map("internal_name")
+  projectType      String            @map("project_type")
+  complexity       ProjectComplexity
+  priority         ProjectPriority   @default(MEDIUM)
+  internalDeadline DateTime?         @map("internal_deadline")
+  fiverrDeadline   DateTime?         @map("fiverr_deadline")
+  meetingLink      String?           @map("meeting_link")
+  domainLink       String?           @map("domain_link")
+  stagingLink      String?           @map("staging_link")
+  stagingPassword  String?           @map("staging_password")
+  clientEmail      String?           @map("client_email")
+  clientUsername   String?           @map("client_username")
+  status           ProjectStatus     @default(NEW)
+
+  // Budget - ENCRYPTED, visible only to Admin
+  budget String?
+
+  // Fiverr Account (visible to Admin + Manager only)
+  fiverrAccountId String        @map("fiverr_account_id")
+  fiverrAccount   FiverrAccount @relation(fields: [fiverrAccountId], references: [id])
+
+  // Creator (Admin)
+  createdById String @map("created_by_id")
+  createdBy   User   @relation("ProjectCreator", fields: [createdById], references: [id])
+
+  // Manager assignment
+  managerId String? @map("manager_id")
+  manager   User?   @relation("ProjectManager", fields: [managerId], references: [id])
+
+  // Team Lead assignment (assigned by Manager)
+  teamLeadId String? @map("team_lead_id")
+  teamLead   User?   @relation("ProjectTeamLead", fields: [teamLeadId], references: [id])
+
+  // Designer attachment (can be added later)
+  designerId String? @map("designer_id")
+  designer   User?   @relation("ProjectDesigner", fields: [designerId], references: [id])
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  requirements   Requirement[]
+  tasks          Task[]
+  assets         DesignAsset[]
+  revisions      Revision[]
+  chatMessages   ChatMessage[]
+  projectReviews ProjectReview[]
+
+  @@map("projects")
+}
+
+/// Requirement - Project requirements document
+/// Written ONLY by Manager, versioned (v1, v2, v3...)
+/// Only latest APPROVED version visible to Team Lead & Developers
+model Requirement {
+  id      String @id @default(cuid())
+  version Int    @default(1)
+
+  // Content stored as JSON
+  // { overview, pages, functional, designNotes, plugins, outOfScope }
+  content Json
+
+  // Attachments (array of file URLs)
+  attachments Json?
+
+  status RequirementStatus @default(DRAFT)
+
+  // Project relation
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Created by Manager
+  createdById String @map("created_by_id")
+  createdBy   User   @relation("RequirementCreator", fields: [createdById], references: [id])
+
+  // Approval
+  approvedById String?   @map("approved_by_id")
+  approvedBy   User?     @relation("RequirementApprover", fields: [approvedById], references: [id])
+  approvedAt   DateTime? @map("approved_at")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Ensure unique version per project
+  @@unique([projectId, version])
+  @@map("requirements")
+}
+
+/// Task - Work units created by Team Lead, assigned to Developers
+/// Developers are assigned via tasks, NEVER directly to projects
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  priority    Int       @default(0)
+  dueDate     DateTime? @map("due_date")
+
+  // Attachments (images, PDFs, Word docs from Team Lead)
+  attachments Json? @map("attachments")
+
+  // Submission data (from Developer when submitting)
+  submissionNote        String? @map("submission_note") @db.Text
+  submissionAttachments Json?   @map("submission_attachments")
+
+  // Rejection data (from Team Lead when requesting changes)
+  rejectionNote        String? @map("rejection_note") @db.Text
+  rejectionAttachments Json?   @map("rejection_attachments")
+
+  status TaskStatus @default(ASSIGNED)
+
+  // Project relation
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Assigned Developer
+  assignedToId String @map("assigned_to_id")
+  assignedTo   User   @relation("TaskAssignee", fields: [assignedToId], references: [id])
+
+  // Created by Team Lead
+  assignedById String @map("assigned_by_id")
+  assignedBy   User   @relation("TaskCreator", fields: [assignedById], references: [id])
+
+  // Status timestamps
+  submittedAt DateTime? @map("submitted_at")
+  approvedAt  DateTime? @map("approved_at")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("tasks")
+}
+
+/// DesignAsset - Visual assets (Logo, Banner, Images)
+/// Uploaded by Designer, approved by Team Lead
+/// Developers can ONLY use approved assets
+model DesignAsset {
+  id          String    @id @default(cuid())
+  assetType   AssetType @map("asset_type")
+  name        String
+  description String?
+
+  // Reference attachments (images, PDFs, text files from Team Lead)
+  referenceAttachments Json? @map("reference_attachments")
+
+  // File info (uploaded asset from Designer)
+  fileUrl  String? @map("file_url")
+  fileName String? @map("file_name")
+  fileSize Int?    @map("file_size")
+
+  status AssetStatus @default(REQUESTED)
+
+  // Project relation
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Requested by (Team Lead or Developer)
+  requestedById String @map("requested_by_id")
+  requestedBy   User   @relation("AssetRequester", fields: [requestedById], references: [id])
+
+  // Uploaded by Designer
+  uploadedById String? @map("uploaded_by_id")
+  uploadedBy   User?   @relation("AssetUploader", fields: [uploadedById], references: [id])
+
+  // Approved by Team Lead
+  approvedById String?   @map("approved_by_id")
+  approvedBy   User?     @relation("AssetApprover", fields: [approvedById], references: [id])
+  approvedAt   DateTime? @map("approved_at")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("design_assets")
+}
+
+/// Revision - Client revision requests
+/// Created by Manager, marked as FREE or PAID
+/// Assigned to Team Lead → Developer
+model Revision {
+  id          String @id @default(cuid())
+  description String
+
+  // Attachments (text, images, PDFs)
+  attachments Json?
+
+  // Payment status
+  isPaid Boolean @default(false) @map("is_paid")
+
+  status RevisionStatus @default(PENDING)
+
+  // Project relation
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Created by Manager
+  createdById String @map("created_by_id")
+  createdBy   User   @relation("RevisionCreator", fields: [createdById], references: [id])
+
+  // Assignment chain
+  assignedTeamLeadId  String? @map("assigned_team_lead_id")
+  assignedTeamLead    User?   @relation("RevisionTeamLead", fields: [assignedTeamLeadId], references: [id])
+  assignedDeveloperId String? @map("assigned_developer_id")
+  assignedDeveloper   User?   @relation("RevisionDeveloper", fields: [assignedDeveloperId], references: [id])
+
+  // Developer submission
+  developerMessage String? @map("developer_message")
+  submittedAt      DateTime? @map("submitted_at")
+
+  // Manager acceptance
+  managerAccepted   Boolean   @default(false) @map("manager_accepted")
+  managerAcceptedAt DateTime? @map("manager_accepted_at")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("revisions")
+}
+
+/// ChatMessage - Project-based chat
+/// Admin-Manager chat within project context
+/// Visible to specific roles only
+model ChatMessage {
+  id      String @id @default(cuid())
+  message String
+
+  // Attachments
+  attachments Json?
+
+  // Message priority (HIGH = important, shown with green UI)
+  priority String @default("NORMAL")
+
+  // Which roles can see this message
+  visibleToRoles Json @map("visible_to_roles")
+
+  // Mentioned users in the message (array of {id, name, role})
+  mentions Json?
+
+  // Project relation
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Sender
+  senderId String @map("sender_id")
+  sender   User   @relation(fields: [senderId], references: [id])
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+
+  @@map("chat_messages")
+}
+
+/// Notification - Real-time notifications
+/// Delivered via WebSockets, stored for history
+model Notification {
+  id      String @id @default(cuid())
+  type    String
+  title   String
+  message String
+
+  // Reference to related entity
+  referenceType String? @map("reference_type")
+  referenceId   String? @map("reference_id")
+
+  // Read status
+  isRead Boolean   @default(false) @map("is_read")
+  readAt DateTime? @map("read_at")
+
+  // User relation
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Timestamp
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+/// AuditLog - Complete audit trail for all actions
+/// Every action logged with user, timestamp, IP
+model AuditLog {
+  id         String @id @default(cuid())
+  action     String
+  entityType String @map("entity_type")
+  entityId   String @map("entity_id")
+
+  // Old and new values for tracking changes
+  oldValue Json? @map("old_value")
+  newValue Json? @map("new_value")
+
+  // Request metadata
+  ipAddress String? @map("ip_address")
+  userAgent String? @map("user_agent")
+
+  // User who performed the action
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Timestamp
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+/// SystemSetting - System configuration
+/// SMTP settings, n8n config, general settings
+model SystemSetting {
+  id       String @id @default(cuid())
+  key      String @unique
+  value    Json
+  category String // "SMTP", "N8N", "GENERAL"
+
+  // Who last updated
+  updatedBy String? @map("updated_by")
+
+  // Timestamp
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("system_settings")
+}
+
+/// ProjectReview - Admin reviews developer performance after project completion
+/// Used to calculate developer tier based on ratings
+model ProjectReview {
+  id String @id @default(cuid())
+
+  // Rating (1-5 stars)
+  rating Int
+
+  // Client feedback summary (from Fiverr/client)
+  clientFeedback String? @map("client_feedback") @db.Text
+
+  // Admin notes about performance
+  adminNotes String? @map("admin_notes") @db.Text
+
+  // Quality metrics
+  codeQuality      Int? @map("code_quality")      // 1-5
+  communicationScore Int? @map("communication_score") // 1-5
+  deliverySpeed    Int? @map("delivery_speed")    // 1-5
+  problemSolving   Int? @map("problem_solving")   // 1-5
+
+  // Project relation
+  projectId String  @map("project_id")
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Developer being reviewed
+  developerId String @map("developer_id")
+  developer   User   @relation("ReviewedDeveloper", fields: [developerId], references: [id])
+
+  // Admin who created the review
+  createdById String @map("created_by_id")
+  createdBy   User   @relation("ReviewCreator", fields: [createdById], references: [id])
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // One review per developer per project
+  @@unique([projectId, developerId])
+  @@map("project_reviews")
+}

@@ -1,0 +1,14 @@
+{
+  "name": "CodeReve Management System",
+  "short_name": "CodeReve",
+  "description": "Internal project management system for CodeReve agency",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [],
+  "categories": ["business", "productivity"],
+  "prefer_related_applications": false
+}
