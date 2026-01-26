@@ -24,7 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useAuthStore } from '@/stores/auth-store';
-import { apiGet, apiPatch, apiPost, getErrorMessage } from '@/lib/api';
+import { apiGet, apiPatch, apiPost, getErrorMessage, uploadFile } from '@/lib/api';
 
 interface UserProfile {
   id: string;
@@ -98,20 +98,7 @@ export default function ProfilePage() {
 
     setUploadingAvatar(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('/api/v1/upload/single', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error('Upload failed');
-
-      const uploadedFile = await response.json();
+      const uploadedFile = await uploadFile('/upload/single', file);
       setAvatarUrl(uploadedFile.url);
       toast.success('Avatar uploaded successfully');
     } catch (error) {
