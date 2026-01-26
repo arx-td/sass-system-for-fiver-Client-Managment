@@ -46,11 +46,11 @@ export class UploadController {
   @ApiResponse({ status: 201, description: 'File uploaded successfully' })
   @ApiResponse({ status: 400, description: 'Invalid file type or size' })
   @UseInterceptors(FileInterceptor('file'))
-  uploadSingle(@UploadedFile() file: Express.Multer.File) {
+  async uploadSingle(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new BadRequestException('No file provided');
     }
-    return this.uploadService.processUploadedFile(file);
+    return await this.uploadService.processUploadedFile(file);
   }
 
   @Post('multiple')
@@ -73,10 +73,10 @@ export class UploadController {
   @ApiResponse({ status: 201, description: 'Files uploaded successfully' })
   @ApiResponse({ status: 400, description: 'Invalid file type or size' })
   @UseInterceptors(FilesInterceptor('files', 10))
-  uploadMultiple(@UploadedFiles() files: Express.Multer.File[]) {
+  async uploadMultiple(@UploadedFiles() files: Express.Multer.File[]) {
     if (!files || files.length === 0) {
       throw new BadRequestException('No files provided');
     }
-    return this.uploadService.processMultipleFiles(files);
+    return await this.uploadService.processMultipleFiles(files);
   }
 }
