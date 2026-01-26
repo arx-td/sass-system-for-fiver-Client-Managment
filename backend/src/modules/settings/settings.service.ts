@@ -98,7 +98,7 @@ export class SettingsService {
     }
 
     try {
-      // Create transporter with saved SMTP settings
+      // Create transporter with saved SMTP settings and timeout
       const transporter = nodemailer.createTransport({
         host: smtpConfig.host,
         port: smtpConfig.port || 587,
@@ -107,6 +107,9 @@ export class SettingsService {
           user: smtpConfig.auth.user,
           pass: smtpConfig.auth.pass,
         },
+        connectionTimeout: 10000, // 10 seconds
+        greetingTimeout: 10000,
+        socketTimeout: 15000,
       });
 
       // Send test email

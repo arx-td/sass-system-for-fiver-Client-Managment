@@ -102,7 +102,7 @@ export class UsersService {
         return;
       }
 
-      // Create transporter
+      // Create transporter with timeout settings
       const transporter = nodemailer.createTransport({
         host: smtpConfig.host,
         port: smtpConfig.port || 587,
@@ -111,6 +111,9 @@ export class UsersService {
           user: smtpConfig.auth.user,
           pass: smtpConfig.auth.pass,
         },
+        connectionTimeout: 10000, // 10 seconds
+        greetingTimeout: 10000,
+        socketTimeout: 15000,
       });
 
       // Get frontend URL from environment or use default
