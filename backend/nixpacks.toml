@@ -9,9 +9,8 @@ cmds = [
   "npx prisma generate",
   "rm -rf dist",
   "npx tsc --project tsconfig.json --outDir dist --declaration false",
-  "ls -la dist/",
-  "ls dist/main.js"
+  "ls -la dist/src/"
 ]
 
 [start]
-cmd = "npx prisma migrate deploy && node dist/main.js"
+cmd = "npx prisma migrate deploy && node dist/src/main.js"
