@@ -7,7 +7,8 @@ cmds = ["npm install"]
 [phases.build]
 cmds = [
   "npx prisma generate",
-  "npx tsc -p tsconfig.build.json",
+  "rm -rf dist",
+  "npx tsc -p tsconfig.build.json --listEmittedFiles",
   "ls -la dist/"
 ]
 
