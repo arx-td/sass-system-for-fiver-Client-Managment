@@ -2,10 +2,10 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "npm install && npx prisma generate && rm -rf dist && npx tsc --project tsconfig.json --outDir dist --declaration false && ls -la dist/src/"
+    "buildCommand": "npm install && npx prisma generate && rm -rf dist && npx tsc --project tsconfig.json --outDir dist --declaration false"
   },
   "deploy": {
-    "startCommand": "npx prisma migrate deploy && node dist/src/main.js",
+    "startCommand": "npx prisma migrate deploy && node -r tsconfig-paths/register dist/src/main.js",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
