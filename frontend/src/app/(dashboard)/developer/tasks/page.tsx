@@ -57,7 +57,7 @@ export default function DeveloperTasksPage() {
 
         if (projectsData.data) {
           for (const project of projectsData.data) {
-            const tasksRes = await fetch(`/api/v1/projects/${project.id}/tasks`, {
+            const tasksRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${project.id}/tasks`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             const tasksData = await tasksRes.json();
@@ -88,7 +88,7 @@ export default function DeveloperTasksPage() {
   const handleStartWork = async (task: Task) => {
     setActionLoading(task.id);
     try {
-      const res = await fetch(`/api/v1/projects/${task.project.id}/tasks/${task.id}/start`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${task.project.id}/tasks/${task.id}/start`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -110,7 +110,7 @@ export default function DeveloperTasksPage() {
   const handleSubmitWork = async (task: Task) => {
     setActionLoading(task.id);
     try {
-      const res = await fetch(`/api/v1/projects/${task.project.id}/tasks/${task.id}/submit`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${task.project.id}/tasks/${task.id}/submit`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
