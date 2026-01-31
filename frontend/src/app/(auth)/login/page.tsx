@@ -224,6 +224,24 @@ export default function LoginPage() {
           <p className="mt-6 text-center text-sm text-slate-500">
             Internal system - Contact admin for access
           </p>
+
+          {/* Download Desktop App */}
+          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <a
+              href="https://github.com/arx-td/sass-system-for-fiver-Client-Managment/releases/latest/download/CodeReve-Setup.exe"
+              className={cn(
+                'w-full py-2.5 px-4 rounded-lg font-medium transition-all',
+                'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200',
+                'hover:bg-slate-200 dark:hover:bg-slate-600',
+                'flex items-center justify-center gap-2'
+              )}
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download Desktop App
+            </a>
+          </div>
         </div>
 
         {/* Copyright */}

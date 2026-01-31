@@ -12,7 +12,8 @@
     "dev": "concurrently \"tsc -w\" \"electron .\"",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "dist:win": "electron-builder --win",
+    "dist:win": "set CSC_IDENTITY_AUTO_DISCOVERY=false && electron-builder --win --config.win.signAndEditExecutable=false",
+    "dist:win:unsigned": "set CSC_IDENTITY_AUTO_DISCOVERY=false && electron-builder --win portable --config.win.signAndEditExecutable=false",
     "dist:mac": "electron-builder --mac",
     "dist:linux": "electron-builder --linux"
   },
@@ -42,7 +43,8 @@
         "nsis",
         "portable"
       ],
-      "icon": "assets/icon.ico"
+      "icon": "assets/icon.ico",
+      "signAndEditExecutable": false
     },
     "mac": {
       "target": [

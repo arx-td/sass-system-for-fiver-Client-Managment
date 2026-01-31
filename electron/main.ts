@@ -1,24 +1,33 @@
-import { app, BrowserWindow, shell, ipcMain, Notification, Menu, Tray } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, Notification, Menu, Tray, nativeImage } from 'electron';
 import * as path from 'path';
+import * as fs from 'fs';
 import { autoUpdater } from 'electron-updater';
 
 let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 
 const isDev = process.env.NODE_ENV === 'development';
-// Production URL - Update 'codereve' with your actual Vercel project name
+// Production URL - Update with your actual Vercel URL
 const frontendUrl = isDev
   ? 'http://localhost:3000'
-  : process.env.FRONTEND_URL || 'https://codereve.vercel.app';
+  : process.env.FRONTEND_URL || 'https://sass-system-for-fiver-client-managment.vercel.app';
+
+// Helper to get icon path (returns undefined if not exists)
+function getIconPath(filename: string): string | undefined {
+  const iconPath = path.join(__dirname, '../assets', filename);
+  return fs.existsSync(iconPath) ? iconPath : undefined;
+}
 
 function createWindow() {
+  const iconPath = getIconPath('icon.png') || getIconPath('icon.ico');
+
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
     minWidth: 800,
     minHeight: 600,
     title: 'CodeReve',
-    icon: path.join(__dirname, '../assets/icon.png'),
+    icon: iconPath,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -62,8 +71,12 @@ function createWindow() {
 }
 
 function createTray() {
-  // Create system tray icon
-  const iconPath = path.join(__dirname, '../assets/tray-icon.png');
+  // Create system tray icon (skip if icon not found)
+  const iconPath = getIconPath('tray-icon.png') || getIconPath('icon.png');
+  if (!iconPath) {
+    console.log('Tray icon not found, skipping tray creation');
+    return;
+  }
   tray = new Tray(iconPath);
 
   const contextMenu = Menu.buildFromTemplate([

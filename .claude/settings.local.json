@@ -47,7 +47,10 @@
       "Bash(railway logs:*)",
       "Bash(railway redeploy:*)",
       "Bash(railway link:*)",
-      "Bash(railway variables:*)"
+      "Bash(railway variables:*)",
+      "Bash(npm run dist:win:*)",
+      "Bash(npm run pack:*)",
+      "Bash(npm run dist:win:unsigned:*)"
     ]
   }
 }
