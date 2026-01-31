@@ -138,7 +138,7 @@ export default function TeamLeadDashboardPage() {
     const fetchData = async () => {
       try {
         // Fetch projects - backend auto-filters for Team Lead role
-        const projectsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects', {
+        const projectsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const projectsData = await projectsRes.json();

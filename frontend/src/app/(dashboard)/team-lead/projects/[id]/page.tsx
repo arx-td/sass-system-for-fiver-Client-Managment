@@ -368,7 +368,7 @@ export default function TeamLeadProjectDetailPage() {
         setRevisions(Array.isArray(revData) ? revData : (revData.data || []));
 
         // Fetch developers for assignment
-        const devRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users?role=DEVELOPER&status=ACTIVE', {
+        const devRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users?role=DEVELOPER&status=ACTIVE`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const devData = await devRes.json();

@@ -57,7 +57,7 @@ async function fetchNotificationSettings(token: string): Promise<NotificationSet
 
   settingsFetchPromise = (async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/notifications/public', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/notifications/public`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -224,7 +224,7 @@ export function useNotifications(): UseNotificationsResult {
     if (!token) return;
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notifications?limit=20', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notifications?limit=20`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -326,7 +326,7 @@ export function useNotifications(): UseNotificationsResult {
     if (!token) return;
 
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notifications/mark-all-read', {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notifications/mark-all-read`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });

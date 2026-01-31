@@ -46,7 +46,8 @@
       "Bash(npx prisma db execute:*)",
       "Bash(railway logs:*)",
       "Bash(railway redeploy:*)",
-      "Bash(railway link:*)"
+      "Bash(railway link:*)",
+      "Bash(railway variables:*)"
     ]
   }
 }

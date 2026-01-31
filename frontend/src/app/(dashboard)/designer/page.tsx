@@ -88,10 +88,10 @@ export default function DesignerDashboardPage() {
       try {
         // Fetch all assets assigned to the designer
         const [assetsRes, projectsRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/assets/my-queue', {
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/assets/my-queue`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects', {
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);

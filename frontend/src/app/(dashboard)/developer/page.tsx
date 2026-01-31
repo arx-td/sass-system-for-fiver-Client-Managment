@@ -133,7 +133,7 @@ export default function DeveloperDashboardPage() {
     const fetchData = async () => {
       try {
         // Fetch tier stats
-        const tierRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project-reviews/my-stats', {
+        const tierRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project-reviews/my-stats`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (tierRes.ok) {
@@ -142,7 +142,7 @@ export default function DeveloperDashboardPage() {
         }
 
         // Fetch all tasks assigned to the current user across all projects
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const projectsData = await res.json();
