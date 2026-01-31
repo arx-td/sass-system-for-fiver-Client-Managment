@@ -257,12 +257,7 @@ export class RequirementsService {
       throw new ForbiddenException('Only assigned manager can update requirements');
     }
 
-    // Cannot update approved requirements
-    if (requirement.status === RequirementStatus.APPROVED) {
-      throw new BadRequestException(
-        'Cannot update approved requirements. Create a new version instead.',
-      );
-    }
+    // Managers can edit requirements even after approval
 
     return this.prisma.requirement.update({
       where: {

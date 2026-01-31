@@ -1166,24 +1166,22 @@ export default function ManagerProjectDetailPage() {
                             >
                               {req.status}
                             </Badge>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openEditRequirement(req)}
+                            >
+                              <Pencil className="mr-2 h-4 w-4" />
+                              Edit
+                            </Button>
                             {req.status === 'DRAFT' && (
-                              <>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => openEditRequirement(req)}
-                                >
-                                  <Pencil className="mr-2 h-4 w-4" />
-                                  Edit
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  onClick={() => handleApproveRequirement(req.version)}
-                                >
-                                  <Check className="mr-2 h-4 w-4" />
-                                  Approve
-                                </Button>
-                              </>
+                              <Button
+                                size="sm"
+                                onClick={() => handleApproveRequirement(req.version)}
+                              >
+                                <Check className="mr-2 h-4 w-4" />
+                                Approve
+                              </Button>
                             )}
                           </div>
                         </div>
@@ -2364,7 +2362,7 @@ export default function ManagerProjectDetailPage() {
           <DialogHeader>
             <DialogTitle>Edit Requirement</DialogTitle>
             <DialogDescription>
-              Update the requirement content. Note: Only draft requirements can be edited.
+              Update the requirement content. Changes will create a new version if approved.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
