@@ -379,7 +379,7 @@ export default function DesignerProjectPage() {
         const formData = new FormData();
         formData.append('file', file);
 
-        const response = await fetch('/api/v1/upload/single', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload/single`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -420,7 +420,7 @@ export default function DesignerProjectPage() {
           const formData = new FormData();
           formData.append('file', file);
 
-          const response = await fetch('/api/v1/upload/single', {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload/single`, {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${token}`,

@@ -310,7 +310,7 @@ export default function AdminProjectDetailPage() {
         formData.append('files', file);
       });
 
-      const response = await fetch('/api/v1/upload/multiple', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload/multiple`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
