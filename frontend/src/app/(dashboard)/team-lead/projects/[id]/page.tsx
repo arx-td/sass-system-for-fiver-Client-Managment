@@ -332,28 +332,28 @@ export default function TeamLeadProjectDetailPage() {
     const fetchData = async () => {
       try {
         // Fetch project details
-        const projectRes = await fetch(`/api/v1/projects/${projectId}`, {
+        const projectRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const projectData = await projectRes.json();
         setProject(projectData);
 
         // Fetch tasks
-        const tasksRes = await fetch(`/api/v1/projects/${projectId}/tasks`, {
+        const tasksRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/tasks`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const tasksData = await tasksRes.json();
         setTasks(tasksData.data || []);
 
         // Fetch assets
-        const assetsRes = await fetch(`/api/v1/projects/${projectId}/assets`, {
+        const assetsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/assets`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const assetsData = await assetsRes.json();
         setAssets(assetsData.data || []);
 
         // Fetch requirements
-        const reqRes = await fetch(`/api/v1/projects/${projectId}/requirements`, {
+        const reqRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/requirements`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const reqData = await reqRes.json();
@@ -361,21 +361,21 @@ export default function TeamLeadProjectDetailPage() {
         setRequirements(Array.isArray(reqData) ? reqData : (reqData.data || []));
 
         // Fetch revisions
-        const revRes = await fetch(`/api/v1/projects/${projectId}/revisions`, {
+        const revRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/revisions`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const revData = await revRes.json();
         setRevisions(Array.isArray(revData) ? revData : (revData.data || []));
 
         // Fetch developers for assignment
-        const devRes = await fetch('/api/v1/users?role=DEVELOPER&status=ACTIVE', {
+        const devRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users?role=DEVELOPER&status=ACTIVE', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const devData = await devRes.json();
         setDevelopers(devData.data || []);
 
         // Fetch chat messages
-        const chatRes = await fetch(`/api/v1/projects/${projectId}/chat`, {
+        const chatRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/chat`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const chatData = await chatRes.json();
@@ -397,7 +397,7 @@ export default function TeamLeadProjectDetailPage() {
 
     setCreating(true);
     try {
-      const res = await fetch(`/api/v1/projects/${projectId}/tasks`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/tasks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -485,7 +485,7 @@ export default function TeamLeadProjectDetailPage() {
         })),
       };
 
-      const res = await fetch(`/api/v1/projects/${projectId}/assets/request`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/assets/request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -510,7 +510,7 @@ export default function TeamLeadProjectDetailPage() {
 
   const handleApproveTask = async (taskId: string) => {
     try {
-      const res = await fetch(`/api/v1/projects/${projectId}/tasks/${taskId}/approve`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/tasks/${taskId}/approve`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -525,7 +525,7 @@ export default function TeamLeadProjectDetailPage() {
 
   const handleRejectTask = async (taskId: string) => {
     try {
-      const res = await fetch(`/api/v1/projects/${projectId}/tasks/${taskId}/reject`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/tasks/${taskId}/reject`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -540,7 +540,7 @@ export default function TeamLeadProjectDetailPage() {
 
   const handleApproveAsset = async (assetId: string) => {
     try {
-      const res = await fetch(`/api/v1/projects/${projectId}/assets/${assetId}/approve`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/assets/${assetId}/approve`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -555,7 +555,7 @@ export default function TeamLeadProjectDetailPage() {
 
   const handleRejectAsset = async (assetId: string) => {
     try {
-      const res = await fetch(`/api/v1/projects/${projectId}/assets/${assetId}/reject`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/assets/${assetId}/reject`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -759,7 +759,7 @@ export default function TeamLeadProjectDetailPage() {
   // Edit message handler
   const handleEditMessage = async (messageId: string, newText: string) => {
     try {
-      const response = await fetch(`/api/v1/projects/${projectId}/chat/${messageId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/chat/${messageId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -790,7 +790,7 @@ export default function TeamLeadProjectDetailPage() {
     if (!confirm('Are you sure you want to delete this message?')) return;
 
     try {
-      const response = await fetch(`/api/v1/projects/${projectId}/chat/${messageId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/chat/${messageId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -820,7 +820,7 @@ export default function TeamLeadProjectDetailPage() {
 
     setSendingMessage(true);
     try {
-      const res = await fetch(`/api/v1/projects/${projectId}/chat`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -859,7 +859,7 @@ export default function TeamLeadProjectDetailPage() {
 
     setSendingManagerMessage(true);
     try {
-      const res = await fetch(`/api/v1/projects/${projectId}/chat`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -972,7 +972,7 @@ export default function TeamLeadProjectDetailPage() {
 
     setMarkingDelivered(true);
     try {
-      const response = await fetch(`/api/v1/projects/${projectId}/mark-delivered`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/mark-delivered`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

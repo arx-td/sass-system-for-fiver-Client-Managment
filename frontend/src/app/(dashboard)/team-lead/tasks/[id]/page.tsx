@@ -19,7 +19,7 @@ export default function TeamLeadTaskRedirectPage() {
 
       try {
         // Fetch all projects to find the one containing this task
-        const projectsRes = await fetch('/api/v1/projects', {
+        const projectsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects', {
           headers: { Authorization: `Bearer ${token}` },
         });
 

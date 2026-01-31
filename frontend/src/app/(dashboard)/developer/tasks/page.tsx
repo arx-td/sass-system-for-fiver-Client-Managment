@@ -48,7 +48,7 @@ export default function DeveloperTasksPage() {
     const fetchTasks = async () => {
       try {
         // Fetch all tasks assigned to the current user across all projects
-        const res = await fetch('/api/v1/projects', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const projectsData = await res.json();

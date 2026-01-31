@@ -175,7 +175,7 @@ export default function DesignerAssetsPage() {
     const fetchData = async () => {
       try {
         // Fetch all assets assigned to the designer
-        const assetsRes = await fetch('/api/v1/assets/my-queue', {
+        const assetsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/assets/my-queue', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const assetsData = await assetsRes.json();

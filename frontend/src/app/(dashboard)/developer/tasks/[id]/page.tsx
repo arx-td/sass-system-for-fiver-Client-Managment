@@ -273,7 +273,7 @@ export default function DeveloperTaskDetailPage() {
       try {
         // First, we need to find which project this task belongs to
         // For now, we'll iterate through projects (in production, you'd have a direct task lookup)
-        const projectsRes = await fetch('/api/v1/projects', {
+        const projectsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const projectsData = await projectsRes.json();
