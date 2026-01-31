@@ -32,7 +32,7 @@ export default function TeamLeadTaskRedirectPage() {
 
         // Search through projects to find the task
         for (const project of projectsData.data || []) {
-          const taskRes = await fetch(`/api/v1/projects/${project.id}/tasks/${taskId}`, {
+          const taskRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${project.id}/tasks/${taskId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
 

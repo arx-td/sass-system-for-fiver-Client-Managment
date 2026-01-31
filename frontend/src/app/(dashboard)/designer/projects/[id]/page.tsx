@@ -241,7 +241,7 @@ export default function DesignerProjectPage() {
       setLoading(true);
 
       // Fetch project details
-      const projectRes = await fetch(`/api/v1/projects/${projectId}`, {
+      const projectRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -254,7 +254,7 @@ export default function DesignerProjectPage() {
       setProject(projectData);
 
       // Fetch assets for this project
-      const assetsRes = await fetch(`/api/v1/projects/${projectId}/assets`, {
+      const assetsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/assets`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -265,7 +265,7 @@ export default function DesignerProjectPage() {
 
       // Fetch chat messages
       try {
-        const chatRes = await fetch(`/api/v1/projects/${projectId}/chat`, {
+        const chatRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/chat`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (chatRes.ok) {
@@ -447,7 +447,7 @@ export default function DesignerProjectPage() {
   // Edit message handler
   const handleEditMessage = async (messageId: string, newText: string) => {
     try {
-      const response = await fetch(`/api/v1/projects/${projectId}/chat/${messageId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/chat/${messageId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -478,7 +478,7 @@ export default function DesignerProjectPage() {
     if (!confirm('Are you sure you want to delete this message?')) return;
 
     try {
-      const response = await fetch(`/api/v1/projects/${projectId}/chat/${messageId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/chat/${messageId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -531,7 +531,7 @@ export default function DesignerProjectPage() {
       // Visible to Team Lead, Developer, and Designer
       const visibleToRoles = ['TEAM_LEAD', 'DEVELOPER', 'DESIGNER'];
 
-      const res = await fetch(`/api/v1/projects/${projectId}/chat`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/chat`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -555,7 +555,7 @@ export default function DesignerProjectPage() {
         setTeamChatAttachments([]);
         setSelectedMentions([]);
         // Refresh messages
-        const chatRes = await fetch(`/api/v1/projects/${projectId}/chat`, {
+        const chatRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/chat`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (chatRes.ok) {
@@ -645,7 +645,7 @@ export default function DesignerProjectPage() {
   const handleStartWork = async (asset: Asset) => {
     setActionLoading(asset.id);
     try {
-      const res = await fetch(`/api/v1/projects/${projectId}/assets/${asset.id}/start`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/assets/${asset.id}/start`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -671,7 +671,7 @@ export default function DesignerProjectPage() {
 
     setSubmittingAsset(true);
     try {
-      const res = await fetch(`/api/v1/projects/${projectId}/assets/${selectedAsset.id}/submit`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/assets/${selectedAsset.id}/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

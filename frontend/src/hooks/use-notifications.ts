@@ -308,7 +308,7 @@ export function useNotifications(): UseNotificationsResult {
     if (!token) return;
 
     try {
-      await fetch(`/api/v1/notifications/${id}/read`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notifications/${id}/read`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });

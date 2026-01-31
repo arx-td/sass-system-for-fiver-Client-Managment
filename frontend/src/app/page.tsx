@@ -13,7 +13,8 @@ import {
   BarChart3,
   Clock,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Download
 } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -229,6 +230,13 @@ export default function LandingPage() {
                 <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-slate-700 hover:border-slate-600 hover:bg-slate-800/50 transition-all duration-300">
                   Watch Demo
                 </button>
+                <a
+                  href="https://github.com/arx-td/sass-system-for-fiver-Client-Managment/releases/latest/download/CodeReve-Setup.exe"
+                  className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-emerald-500/50 bg-emerald-500/10 hover:bg-emerald-500/20 hover:border-emerald-400 text-emerald-400 transition-all duration-300 hover:scale-105"
+                >
+                  <Download className="w-5 h-5 group-hover:animate-bounce" />
+                  Download App
+                </a>
               </div>
             </div>
 

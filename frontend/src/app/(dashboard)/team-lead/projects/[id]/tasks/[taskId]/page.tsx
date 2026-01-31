@@ -94,7 +94,7 @@ export default function TeamLeadTaskDetailPage() {
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        const response = await fetch(`/api/v1/projects/${projectId}/tasks/${taskId}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/tasks/${taskId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -120,7 +120,7 @@ export default function TeamLeadTaskDetailPage() {
   const handleApprove = async () => {
     setApproving(true);
     try {
-      const response = await fetch(`/api/v1/projects/${projectId}/tasks/${taskId}/approve`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/tasks/${taskId}/approve`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -153,7 +153,7 @@ export default function TeamLeadTaskDetailPage() {
 
     setRejecting(true);
     try {
-      const response = await fetch(`/api/v1/projects/${projectId}/tasks/${taskId}/reject`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/tasks/${taskId}/reject`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

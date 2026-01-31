@@ -56,7 +56,7 @@ export default function TeamLeadProjectsPage() {
         if (priorityFilter !== 'all') params.append('priority', priorityFilter);
         if (search) params.append('search', search);
 
-        const res = await fetch(`/api/v1/projects?${params.toString()}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects?${params.toString()}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();

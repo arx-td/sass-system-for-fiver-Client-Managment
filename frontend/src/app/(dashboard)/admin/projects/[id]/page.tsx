@@ -267,7 +267,7 @@ export default function AdminProjectDetailPage() {
 
     setSendingMessage(true);
     try {
-      const response = await fetch(`/api/v1/projects/${projectId}/chat`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

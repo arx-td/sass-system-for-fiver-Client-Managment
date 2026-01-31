@@ -156,7 +156,7 @@ export default function TeamLeadDashboardPage() {
           let totalPendingReviews = 0;
 
           for (const project of projectsData.data) {
-            const tasksRes = await fetch(`/api/v1/projects/${project.id}/tasks`, {
+            const tasksRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${project.id}/tasks`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             const tasksData = await tasksRes.json();

@@ -116,7 +116,7 @@ export default function DesignerDashboardPage() {
   const handleStartWork = async (asset: Asset) => {
     setActionLoading(asset.id);
     try {
-      const res = await fetch(`/api/v1/projects/${asset.project.id}/assets/${asset.id}/start`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${asset.project.id}/assets/${asset.id}/start`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -142,7 +142,7 @@ export default function DesignerDashboardPage() {
 
     setUploading(true);
     try {
-      const res = await fetch(`/api/v1/projects/${selectedAsset.project.id}/assets/${selectedAsset.id}/submit`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${selectedAsset.project.id}/assets/${selectedAsset.id}/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

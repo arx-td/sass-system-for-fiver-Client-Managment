@@ -754,7 +754,7 @@ export default function ManagerProjectDetailPage() {
 
     setMarkingCompleted(true);
     try {
-      const response = await fetch(`/api/v1/projects/${projectId}/mark-completed`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/mark-completed`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -786,7 +786,7 @@ export default function ManagerProjectDetailPage() {
 
     setSendingToClient(true);
     try {
-      const response = await fetch(`/api/v1/projects/${projectId}/send-to-client`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/send-to-client`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -815,7 +815,7 @@ export default function ManagerProjectDetailPage() {
 
     setMarkingClientChanges(true);
     try {
-      const response = await fetch(`/api/v1/projects/${projectId}/client-requests-changes`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/client-requests-changes`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

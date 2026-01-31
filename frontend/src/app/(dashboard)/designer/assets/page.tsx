@@ -188,7 +188,7 @@ export default function DesignerAssetsPage() {
         const teams: ProjectTeam[] = [];
         for (const projectId of projectIds) {
           try {
-            const projectRes = await fetch(`/api/v1/projects/${projectId}`, {
+            const projectRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             if (projectRes.ok) {
@@ -259,7 +259,7 @@ export default function DesignerAssetsPage() {
     // Fetch initial messages
     const fetchMessages = async () => {
       try {
-        const chatRes = await fetch(`/api/v1/projects/${projectId}/chat`, {
+        const chatRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}/chat`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (chatRes.ok) {
