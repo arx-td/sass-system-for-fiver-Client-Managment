@@ -24,7 +24,9 @@ export function useSocket(options: UseSocketOptions = {}) {
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
     const socket = io(`${backendUrl}${namespace}`, {
       auth: { token },
-      transports: ['websocket', 'polling'],
+      transports: ['polling', 'websocket'],
+      upgrade: true,
+      rememberUpgrade: true,
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,

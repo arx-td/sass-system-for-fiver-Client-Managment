@@ -181,7 +181,9 @@ export default function DesignerProjectPage() {
     const backendUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:4000';
     const socket = io(`${backendUrl}/chat`, {
       auth: { token },
-      transports: ['websocket', 'polling'],
+      transports: ['polling', 'websocket'],
+      upgrade: true,
+      rememberUpgrade: true,
     });
 
     socket.on('connect', () => {

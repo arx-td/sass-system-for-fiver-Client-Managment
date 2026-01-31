@@ -57,7 +57,9 @@ export function ChatNotificationProvider({ children }: { children: React.ReactNo
 
     const socket = io(`${backendUrl}/chat`, {
       auth: { token },
-      transports: ['websocket', 'polling'],
+      transports: ['polling', 'websocket'],
+      upgrade: true,
+      rememberUpgrade: true,
     });
 
     socket.on('connect', () => {

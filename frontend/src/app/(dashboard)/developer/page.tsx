@@ -188,7 +188,9 @@ export default function DeveloperDashboardPage() {
     const backendUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:4000';
     const socket: Socket = io(`${backendUrl}/notifications`, {
       auth: { token },
-      transports: ['websocket', 'polling'],
+      transports: ['polling', 'websocket'],
+      upgrade: true,
+      rememberUpgrade: true,
     });
 
     socket.on('connect', () => {

@@ -265,7 +265,9 @@ export function useNotifications(): UseNotificationsResult {
 
     const newSocket = io(`${backendUrl}/notifications`, {
       auth: { token },
-      transports: ['websocket', 'polling'],
+      transports: ['polling', 'websocket'],
+      upgrade: true,
+      rememberUpgrade: true,
     });
 
     newSocket.on('connect', () => {

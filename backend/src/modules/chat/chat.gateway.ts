@@ -28,6 +28,8 @@ interface AuthenticatedSocket extends Socket {
     credentials: true,
   },
   namespace: '/chat',
+  transports: ['polling', 'websocket'],
+  allowEIO3: true,
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
