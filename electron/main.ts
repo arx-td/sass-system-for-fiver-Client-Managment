@@ -10,7 +10,7 @@ const isDev = process.env.NODE_ENV === 'development';
 // Production URL - Update with your actual Vercel URL
 const frontendUrl = isDev
   ? 'http://localhost:3000'
-  : process.env.FRONTEND_URL || 'https://sass-system-for-fiver-client-managment.vercel.app';
+  : process.env.FRONTEND_URL || 'https://sass-system-for-fiver-client-managm.vercel.app';
 
 // Helper to get icon path (returns undefined if not exists)
 function getIconPath(filename: string): string | undefined {

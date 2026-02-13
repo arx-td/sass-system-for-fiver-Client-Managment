@@ -54,6 +54,9 @@ backend/prisma/migrations/*_migration_lock.toml
 .eslintcache
 .stylelintcache
 
+# Vercel
+.vercel/
+
 # Electron
 electron/dist/
 electron/out/
