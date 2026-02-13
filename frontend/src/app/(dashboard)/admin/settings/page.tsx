@@ -115,7 +115,7 @@ export default function SettingsPage() {
 
   // General Settings
   const [generalSettings, setGeneralSettings] = useState<GeneralSettings>({
-    companyName: 'CodeReve',
+    companyName: 'DEEPAXIS',
     timezone: 'UTC',
     dateFormat: 'MM/DD/YYYY',
     notificationsEnabled: true,
@@ -656,7 +656,7 @@ export default function SettingsPage() {
                 <Label htmlFor="smtpFrom">From Address</Label>
                 <Input
                   id="smtpFrom"
-                  placeholder="noreply@codereve.com"
+                  placeholder="noreply@deepaxis.com"
                   value={smtpSettings.from}
                   onChange={(e) =>
                     setSmtpSettings({ ...smtpSettings, from: e.target.value })
@@ -951,7 +951,7 @@ export default function SettingsPage() {
                   <Label htmlFor="companyName">Company Name</Label>
                   <Input
                     id="companyName"
-                    placeholder="CodeReve"
+                    placeholder="DEEPAXIS"
                     value={generalSettings.companyName}
                     onChange={(e) =>
                       setGeneralSettings({

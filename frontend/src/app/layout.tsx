@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'CodeReve Management System',
-  description: 'Internal SaaS management system for CodeReve agency',
+  title: 'DEEPAXIS Management System',
+  description: 'Internal SaaS management system for DEEPAXIS agency',
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.ico',
@@ -18,16 +18,16 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'CodeReve',
+    title: 'DEEPAXIS',
   },
   formatDetection: {
     telephone: false,
   },
   openGraph: {
     type: 'website',
-    siteName: 'CodeReve',
-    title: 'CodeReve Management System',
-    description: 'Internal SaaS management system for CodeReve agency',
+    siteName: 'DEEPAXIS',
+    title: 'DEEPAXIS Management System',
+    description: 'Internal SaaS management system for DEEPAXIS agency',
   },
 };
 
@@ -51,7 +51,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="CodeReve" />
+        <meta name="apple-mobile-web-app-title" content="DEEPAXIS" />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <Providers>{children}</Providers>

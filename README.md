@@ -1,4 +1,4 @@
-# CodeReve Management System
+# DEEPAXIS Management System
 
 A comprehensive **internal SaaS platform** for managing Fiverr-based freelance projects. Built for agencies handling multiple Fiverr accounts with strict role-based access control (RBAC) and real-time collaboration features.
 
@@ -27,7 +27,7 @@ A comprehensive **internal SaaS platform** for managing Fiverr-based freelance p
 
 ## Overview
 
-CodeReve Management System is designed for **internal use only** (no public signup) to manage:
+DEEPAXIS Management System is designed for **internal use only** (no public signup) to manage:
 
 - Multiple Fiverr accounts and their projects
 - Team collaboration across different roles
@@ -184,7 +184,7 @@ ADMIN (Full Access)
 ## Project Structure
 
 ```
-codereve-management-system/
+deepaxis-management-system/
 │
 ├── backend/                          # NestJS Backend
 │   ├── src/
@@ -308,7 +308,7 @@ NODE_ENV=development
 PORT=4000
 
 # Database (PostgreSQL)
-DATABASE_URL="postgresql://user:password@localhost:5432/codereve_db?schema=public"
+DATABASE_URL="postgresql://user:password@localhost:5432/deepaxis_db?schema=public"
 
 # Authentication
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
@@ -323,7 +323,7 @@ SMTP_PORT=2525
 SMTP_SECURE=false
 SMTP_USER=your-smtp-user
 SMTP_PASS=your-smtp-pass
-SMTP_FROM=noreply@codereve.com
+SMTP_FROM=noreply@deepaxis.com
 
 # File Uploads
 UPLOAD_DIR=./uploads
@@ -358,9 +358,9 @@ docker-compose up -d
 # The database will be available at:
 # Host: localhost
 # Port: 5432
-# User: codereve
-# Password: codereve_secret
-# Database: codereve_db
+# User: deepaxis
+# Password: deepaxis_secret
+# Database: deepaxis_db
 ```
 
 ### Using Neon (Cloud PostgreSQL)
@@ -397,7 +397,7 @@ npx prisma db seed
 ```
 
 **Default Admin Credentials:**
-- Email: `admin@codereve.com`
+- Email: `admin@deepaxis.com`
 - Password: `Admin@123`
 
 ---
@@ -586,7 +586,7 @@ docker-compose -f docker-compose.n8n.yml up -d
 # Access n8n
 # URL: http://localhost:5678
 # Username: admin
-# Password: codereve123
+# Password: deepaxis123
 ```
 
 ### Available Webhook Endpoints
@@ -628,7 +628,7 @@ npm install
 npm run dist:win
 ```
 
-The installer will be at: `electron/release/CodeReve Setup 1.0.0.exe`
+The installer will be at: `electron/release/DEEPAXIS Setup 1.0.0.exe`
 
 ### Build for macOS
 
@@ -698,7 +698,7 @@ APPROVED
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@codereve.com | Admin@123 |
+| Admin | admin@deepaxis.com | Admin@123 |
 
 Create additional users via Admin dashboard after login.
 

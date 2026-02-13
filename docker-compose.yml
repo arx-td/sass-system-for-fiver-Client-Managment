@@ -3,25 +3,25 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: codereve_postgres
+    container_name: deepaxis_postgres
     restart: unless-stopped
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_USER: codereve
-      POSTGRES_PASSWORD: codereve_secret
-      POSTGRES_DB: codereve_db
+      POSTGRES_USER: deepaxis
+      POSTGRES_PASSWORD: deepaxis_secret
+      POSTGRES_DB: deepaxis_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U codereve -d codereve_db']
+      test: ['CMD-SHELL', 'pg_isready -U deepaxis -d deepaxis_db']
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
     image: redis:7-alpine
-    container_name: codereve_redis
+    container_name: deepaxis_redis
     restart: unless-stopped
     ports:
       - '6379:6379'

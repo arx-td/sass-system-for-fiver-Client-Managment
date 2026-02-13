@@ -9,10 +9,10 @@ async function main() {
   // Create Admin user
   const adminPassword = await bcrypt.hash('Admin@123456', 10);
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@codereve.com' },
+    where: { email: 'admin@deepaxis.com' },
     update: {},
     create: {
-      email: 'admin@codereve.com',
+      email: 'admin@deepaxis.com',
       passwordHash: adminPassword,
       name: 'System Admin',
       role: UserRole.ADMIN,
@@ -24,10 +24,10 @@ async function main() {
   // Create Manager user
   const managerPassword = await bcrypt.hash('Manager@123456', 10);
   const manager = await prisma.user.upsert({
-    where: { email: 'manager@codereve.com' },
+    where: { email: 'manager@deepaxis.com' },
     update: {},
     create: {
-      email: 'manager@codereve.com',
+      email: 'manager@deepaxis.com',
       passwordHash: managerPassword,
       name: 'Project Manager',
       role: UserRole.MANAGER,
@@ -40,10 +40,10 @@ async function main() {
   // Create Team Lead user
   const teamLeadPassword = await bcrypt.hash('TeamLead@123456', 10);
   const teamLead = await prisma.user.upsert({
-    where: { email: 'teamlead@codereve.com' },
+    where: { email: 'teamlead@deepaxis.com' },
     update: {},
     create: {
-      email: 'teamlead@codereve.com',
+      email: 'teamlead@deepaxis.com',
       passwordHash: teamLeadPassword,
       name: 'Team Lead',
       role: UserRole.TEAM_LEAD,
@@ -56,10 +56,10 @@ async function main() {
   // Create Developer users
   const developerPassword = await bcrypt.hash('Developer@123456', 10);
   const developer1 = await prisma.user.upsert({
-    where: { email: 'developer1@codereve.com' },
+    where: { email: 'developer1@deepaxis.com' },
     update: {},
     create: {
-      email: 'developer1@codereve.com',
+      email: 'developer1@deepaxis.com',
       passwordHash: developerPassword,
       name: 'John Developer',
       role: UserRole.DEVELOPER,
@@ -70,10 +70,10 @@ async function main() {
   console.log('✅ Developer 1 created:', developer1.email);
 
   const developer2 = await prisma.user.upsert({
-    where: { email: 'developer2@codereve.com' },
+    where: { email: 'developer2@deepaxis.com' },
     update: {},
     create: {
-      email: 'developer2@codereve.com',
+      email: 'developer2@deepaxis.com',
       passwordHash: developerPassword,
       name: 'Jane Developer',
       role: UserRole.DEVELOPER,
@@ -86,10 +86,10 @@ async function main() {
   // Create Designer user
   const designerPassword = await bcrypt.hash('Designer@123456', 10);
   const designer = await prisma.user.upsert({
-    where: { email: 'designer@codereve.com' },
+    where: { email: 'designer@deepaxis.com' },
     update: {},
     create: {
-      email: 'designer@codereve.com',
+      email: 'designer@deepaxis.com',
       passwordHash: designerPassword,
       name: 'Creative Designer',
       role: UserRole.DESIGNER,
@@ -101,11 +101,11 @@ async function main() {
 
   // Create Fiverr Accounts
   const fiverrAccount1 = await prisma.fiverrAccount.upsert({
-    where: { accountName: 'CodeReve_Main' },
+    where: { accountName: 'DEEPAXIS_Main' },
     update: {},
     create: {
-      accountName: 'CodeReve_Main',
-      accountEmail: 'main@codereve.com',
+      accountName: 'DEEPAXIS_Main',
+      accountEmail: 'main@deepaxis.com',
       isActive: true,
       createdById: admin.id,
     },
@@ -113,11 +113,11 @@ async function main() {
   console.log('✅ Fiverr Account 1 created:', fiverrAccount1.accountName);
 
   const fiverrAccount2 = await prisma.fiverrAccount.upsert({
-    where: { accountName: 'CodeReve_Pro' },
+    where: { accountName: 'DEEPAXIS_Pro' },
     update: {},
     create: {
-      accountName: 'CodeReve_Pro',
-      accountEmail: 'pro@codereve.com',
+      accountName: 'DEEPAXIS_Pro',
+      accountEmail: 'pro@deepaxis.com',
       isActive: true,
       createdById: admin.id,
     },
@@ -138,7 +138,7 @@ async function main() {
           user: '',
           pass: '',
         },
-        from: 'noreply@codereve.com',
+        from: 'noreply@deepaxis.com',
       },
       category: 'SMTP',
     },
@@ -166,7 +166,7 @@ async function main() {
     create: {
       key: 'general_config',
       value: {
-        companyName: 'CodeReve',
+        companyName: 'DEEPAXIS',
         timezone: 'UTC',
         dateFormat: 'YYYY-MM-DD',
         notificationsEnabled: true,
@@ -179,12 +179,12 @@ async function main() {
   console.log('\n✨ Database seeding completed!\n');
   console.log('📋 Test Credentials:');
   console.log('─────────────────────────────────────────');
-  console.log('Admin:     admin@codereve.com     / Admin@123456');
-  console.log('Manager:   manager@codereve.com   / Manager@123456');
-  console.log('Team Lead: teamlead@codereve.com  / TeamLead@123456');
-  console.log('Developer: developer1@codereve.com / Developer@123456');
-  console.log('Developer: developer2@codereve.com / Developer@123456');
-  console.log('Designer:  designer@codereve.com  / Designer@123456');
+  console.log('Admin:     admin@deepaxis.com     / Admin@123456');
+  console.log('Manager:   manager@deepaxis.com   / Manager@123456');
+  console.log('Team Lead: teamlead@deepaxis.com  / TeamLead@123456');
+  console.log('Developer: developer1@deepaxis.com / Developer@123456');
+  console.log('Developer: developer2@deepaxis.com / Developer@123456');
+  console.log('Designer:  designer@deepaxis.com  / Designer@123456');
   console.log('─────────────────────────────────────────\n');
 }
 

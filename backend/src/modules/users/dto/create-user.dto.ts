@@ -4,7 +4,7 @@ import { UserRole } from '@prisma/client';
 
 export class CreateUserDto {
   @ApiProperty({
-    example: 'john@codereve.com',
+    example: 'john@deepaxis.com',
     description: 'User email address',
   })
   @IsEmail({}, { message: 'Please provide a valid email address' })

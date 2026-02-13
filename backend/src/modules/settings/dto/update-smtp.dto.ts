@@ -38,7 +38,7 @@ export class UpdateSmtpDto {
   @Type(() => SmtpAuthDto)
   auth: SmtpAuthDto;
 
-  @ApiPropertyOptional({ example: 'noreply@codereve.com' })
+  @ApiPropertyOptional({ example: 'noreply@deepaxis.com' })
   @IsEmail()
   @IsOptional()
   from: string;

@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "CodeReve Management System - NestJS Backend",
+  "description": "DEEPAXIS Management System - NestJS Backend",
   "private": true,
   "scripts": {
     "build": "prisma generate && nest build",

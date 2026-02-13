@@ -189,7 +189,7 @@ export default function LandingPage() {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
             <span className="text-xl font-bold">&lt;/&gt;</span>
           </div>
-          <span className="text-xl font-bold">CodeReve</span>
+          <span className="text-xl font-bold">DEEPAXIS</span>
         </div>
         <Link
           href="/login"
@@ -231,7 +231,7 @@ export default function LandingPage() {
                   Watch Demo
                 </button>
                 <a
-                  href="https://github.com/arx-td/sass-system-for-fiver-Client-Managment/releases/latest/download/CodeReve-Setup.exe"
+                  href="https://github.com/arx-td/sass-system-for-fiver-Client-Managment/releases/latest/download/DEEPAXIS-Setup.exe"
                   className="group inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border border-emerald-500/50 bg-emerald-500/10 hover:bg-emerald-500/20 hover:border-emerald-400 text-emerald-400 transition-all duration-300 hover:scale-105"
                 >
                   <Download className="w-5 h-5 group-hover:animate-bounce" />
@@ -350,7 +350,7 @@ export default function LandingPage() {
                 Ready to Transform Your Workflow?
               </h2>
               <p className="text-white/80 max-w-xl mx-auto mb-8">
-                Join teams who have already streamlined their project management with CodeReve.
+                Join teams who have already streamlined their project management with DEEPAXIS.
               </p>
               <Link
                 href="/login"
@@ -371,10 +371,10 @@ export default function LandingPage() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
               <span className="text-sm font-bold">&lt;/&gt;</span>
             </div>
-            <span className="font-semibold">CodeReve</span>
+            <span className="font-semibold">DEEPAXIS</span>
           </div>
           <p className="text-slate-500 text-sm">
-            &copy; {new Date().getFullYear()} CodeReve. All rights reserved.
+            &copy; {new Date().getFullYear()} DEEPAXIS. All rights reserved.
           </p>
         </div>
       </footer>

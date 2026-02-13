@@ -1,9 +1,9 @@
 {
-  "name": "codereve-desktop",
+  "name": "deepaxis-desktop",
   "version": "1.0.0",
-  "description": "CodeReve Management System - Desktop App",
+  "description": "DEEPAXIS Management System - Desktop App",
   "main": "dist/main.js",
-  "author": "CodeReve",
+  "author": "DEEPAXIS",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
@@ -28,9 +28,9 @@
     "typescript": "^5.3.0"
   },
   "build": {
-    "appId": "com.codereve.management",
-    "productName": "CodeReve",
-    "copyright": "Copyright © 2024 CodeReve",
+    "appId": "com.deepaxis.management",
+    "productName": "DEEPAXIS",
+    "copyright": "Copyright © 2024 DEEPAXIS",
     "directories": {
       "output": "release"
     },

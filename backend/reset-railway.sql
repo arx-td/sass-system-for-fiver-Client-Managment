@@ -270,7 +270,7 @@ ALTER TABLE "audit_logs" ADD CONSTRAINT "audit_logs_user_id_fkey" FOREIGN KEY ("
 INSERT INTO "users" ("id", "email", "password_hash", "name", "role", "status", "created_at", "updated_at")
 VALUES (
     'cladmin001',
-    'admin@codereve.com',
+    'admin@deepaxis.com',
     '$2b$10$K1XPBxjVNYNqH3.PO7cGxOqHqsYLqM9xyspQdJhHJ5.nQb6vEKxCe',
     'System Admin',
     'ADMIN',
@@ -283,8 +283,8 @@ VALUES (
 INSERT INTO "fiverr_accounts" ("id", "account_name", "account_email", "is_active", "created_by_id", "created_at", "updated_at")
 VALUES (
     'clfiverr001',
-    'CodeReve_Main',
-    'main@codereve.com',
+    'DEEPAXIS_Main',
+    'main@deepaxis.com',
     true,
     'cladmin001',
     NOW(),
@@ -294,6 +294,6 @@ VALUES (
 -- Insert system settings
 INSERT INTO "system_settings" ("id", "key", "value", "category", "updated_at")
 VALUES
-    ('clset001', 'smtp_config', '{"host":"smtp.gmail.com","port":587,"secure":false,"auth":{"user":"","pass":""},"from":"noreply@codereve.com"}', 'SMTP', NOW()),
+    ('clset001', 'smtp_config', '{"host":"smtp.gmail.com","port":587,"secure":false,"auth":{"user":"","pass":""},"from":"noreply@deepaxis.com"}', 'SMTP', NOW()),
     ('clset002', 'n8n_config', '{"enabled":false,"webhookUrl":"","apiKey":""}', 'N8N', NOW()),
-    ('clset003', 'general_config', '{"companyName":"CodeReve","timezone":"UTC","dateFormat":"YYYY-MM-DD","notificationsEnabled":true}', 'GENERAL', NOW());
+    ('clset003', 'general_config', '{"companyName":"DEEPAXIS","timezone":"UTC","dateFormat":"YYYY-MM-DD","notificationsEnabled":true}', 'GENERAL', NOW());

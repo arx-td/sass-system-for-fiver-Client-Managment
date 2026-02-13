@@ -76,7 +76,7 @@ export default function LoginPage() {
               />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-white">CodeReve</h1>
+          <h1 className="text-2xl font-bold text-white">DEEPAXIS</h1>
           <p className="text-slate-400 mt-1">Management System</p>
         </div>
 
@@ -228,7 +228,7 @@ export default function LoginPage() {
           {/* Download Desktop App */}
           <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
             <a
-              href="https://github.com/arx-td/sass-system-for-fiver-Client-Managment/releases/latest/download/CodeReve-Setup.exe"
+              href="https://github.com/arx-td/sass-system-for-fiver-Client-Managment/releases/latest/download/DEEPAXIS-Setup.exe"
               className={cn(
                 'w-full py-2.5 px-4 rounded-lg font-medium transition-all',
                 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200',
@@ -246,7 +246,7 @@ export default function LoginPage() {
 
         {/* Copyright */}
         <p className="mt-8 text-center text-xs text-slate-500">
-          &copy; {new Date().getFullYear()} CodeReve. All rights reserved.
+          &copy; {new Date().getFullYear()} DEEPAXIS. All rights reserved.
         </p>
       </div>
     </div>

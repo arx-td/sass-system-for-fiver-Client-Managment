@@ -47,8 +47,8 @@ async function bootstrap() {
   // Swagger API documentation
   if (configService.get<string>('NODE_ENV') !== 'production') {
     const swaggerConfig = new DocumentBuilder()
-      .setTitle('CodeReve Management System API')
-      .setDescription('Internal SaaS API for CodeReve agency management')
+      .setTitle('DEEPAXIS Management System API')
+      .setDescription('Internal SaaS API for DEEPAXIS agency management')
       .setVersion('1.0')
       .addBearerAuth(
         {
@@ -86,7 +86,7 @@ async function bootstrap() {
   console.log(`
   ╔═══════════════════════════════════════════════════════════════╗
   ║                                                               ║
-  ║   CodeReve Management System - Backend                        ║
+  ║   DEEPAXIS Management System - Backend                        ║
   ║                                                               ║
   ║   Server running on: http://localhost:${port}                   ║
   ║   API Docs: http://localhost:${port}/api/docs                   ║

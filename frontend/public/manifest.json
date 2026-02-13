@@ -1,7 +1,7 @@
 {
-  "name": "CodeReve Management System",
-  "short_name": "CodeReve",
-  "description": "Internal project management system for CodeReve agency",
+  "name": "DEEPAXIS Management System",
+  "short_name": "DEEPAXIS",
+  "description": "Internal project management system for DEEPAXIS agency",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

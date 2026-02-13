@@ -1,4 +1,4 @@
-const CACHE_NAME = 'codereve-v1';
+const CACHE_NAME = 'deepaxis-v1';
 
 // Minimal caching - only cache the shell
 self.addEventListener('install', (event) => {

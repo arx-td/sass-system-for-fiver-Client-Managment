@@ -26,7 +26,7 @@ function createWindow() {
     height: 900,
     minWidth: 800,
     minHeight: 600,
-    title: 'CodeReve',
+    title: 'DEEPAXIS',
     icon: iconPath,
     webPreferences: {
       nodeIntegration: false,
@@ -81,7 +81,7 @@ function createTray() {
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Show CodeReve',
+      label: 'Show DEEPAXIS',
       click: () => {
         mainWindow?.show();
       },
@@ -102,7 +102,7 @@ function createTray() {
     },
   ]);
 
-  tray.setToolTip('CodeReve Management System');
+  tray.setToolTip('DEEPAXIS Management System');
   tray.setContextMenu(contextMenu);
 
   tray.on('click', () => {

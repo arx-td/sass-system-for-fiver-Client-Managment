@@ -206,7 +206,7 @@ export default function FiverrAccountsPage() {
                 <Label htmlFor="accountName">Account Name</Label>
                 <Input
                   id="accountName"
-                  placeholder="e.g., codereve_main"
+                  placeholder="e.g., deepaxis_main"
                   value={formData.accountName}
                   onChange={(e) =>
                     setFormData({ ...formData, accountName: e.target.value })

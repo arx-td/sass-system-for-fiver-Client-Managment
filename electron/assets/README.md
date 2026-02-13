@@ -1,4 +1,4 @@
-# CodeReve Desktop App - Icons
+# DEEPAXIS Desktop App - Icons
 
 Place the following icon files in this folder:
 

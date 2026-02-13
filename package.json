@@ -1,7 +1,7 @@
 {
-  "name": "codereve-management-system",
+  "name": "deepaxis-management-system",
   "version": "1.0.0",
-  "description": "Internal SaaS management system for CodeReve agency",
+  "description": "Internal SaaS management system for DEEPAXIS agency",
   "private": true,
   "workspaces": [
     "backend",
@@ -30,6 +30,6 @@
     "node": ">=18.0.0",
     "npm": ">=9.0.0"
   },
-  "author": "CodeReve",
+  "author": "DEEPAXIS",
   "license": "UNLICENSED"
 }

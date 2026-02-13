@@ -1,4 +1,4 @@
-// CodeReve Management System - Database Schema
+// DEEPAXIS Management System - Database Schema
 // Internal SaaS for WordPress & Web Development Agency
 
 generator client {
@@ -173,7 +173,7 @@ model User {
   @@map("users")
 }
 
-/// Fiverr Account - CodeReve operates multiple Fiverr seller accounts
+/// Fiverr Account - DEEPAXIS operates multiple Fiverr seller accounts
 /// Each project belongs to exactly ONE account
 /// Account name visible ONLY to Admin and Manager
 model FiverrAccount {

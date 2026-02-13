@@ -123,14 +123,14 @@ export class UsersService {
       const emailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="color: #0f172a; margin: 0;">CodeReve</h1>
+            <h1 style="color: #0f172a; margin: 0;">DEEPAXIS</h1>
             <p style="color: #64748b; margin: 5px 0;">Management System</p>
           </div>
 
           <h2 style="color: #0f172a;">Welcome, ${name}!</h2>
 
           <p style="color: #334155; line-height: 1.6;">
-            You've been invited to join the CodeReve Management System. To get started,
+            You've been invited to join the DEEPAXIS Management System. To get started,
             please set up your password by clicking the button below.
           </p>
 
@@ -158,7 +158,7 @@ export class UsersService {
           <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
 
           <p style="color: #94a3b8; font-size: 12px; text-align: center;">
-            This email was sent from CodeReve Management System.
+            This email was sent from DEEPAXIS Management System.
           </p>
         </div>
       `;
@@ -179,7 +179,7 @@ export class UsersService {
           body: JSON.stringify({
             from: smtpConfig.from || 'onboarding@resend.dev',
             to: [email],
-            subject: 'Welcome to CodeReve - You\'ve Been Invited!',
+            subject: 'Welcome to DEEPAXIS - You\'ve Been Invited!',
             html: emailHtml,
           }),
         });
@@ -205,7 +205,7 @@ export class UsersService {
           body: JSON.stringify({
             personalizations: [{ to: [{ email }] }],
             from: { email: smtpConfig.from || smtpConfig.auth.user },
-            subject: 'Welcome to CodeReve - You\'ve Been Invited!',
+            subject: 'Welcome to DEEPAXIS - You\'ve Been Invited!',
             content: [{ type: 'text/html', value: emailHtml }],
           }),
         });
@@ -227,9 +227,9 @@ export class UsersService {
         const apiKey = smtpConfig.auth.pass;
 
         const formData = new URLSearchParams();
-        formData.append('from', smtpConfig.from || `CodeReve <noreply@${domain}>`);
+        formData.append('from', smtpConfig.from || `DEEPAXIS <noreply@${domain}>`);
         formData.append('to', email);
-        formData.append('subject', 'Welcome to CodeReve - You\'ve Been Invited!');
+        formData.append('subject', 'Welcome to DEEPAXIS - You\'ve Been Invited!');
         formData.append('html', emailHtml);
 
         const response = await fetch(`https://api.mailgun.net/v3/${domain}/messages`, {
@@ -268,7 +268,7 @@ export class UsersService {
       await transporter.sendMail({
         from: smtpConfig.from || smtpConfig.auth.user,
         to: email,
-        subject: 'Welcome to CodeReve - You\'ve Been Invited!',
+        subject: 'Welcome to DEEPAXIS - You\'ve Been Invited!',
         html: emailHtml,
       });
 

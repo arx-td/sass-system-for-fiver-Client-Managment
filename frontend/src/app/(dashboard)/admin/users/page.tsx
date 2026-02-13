@@ -328,7 +328,7 @@ export default function UsersPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="john@codereve.com"
+                  placeholder="john@deepaxis.com"
                   value={inviteForm.email}
                   onChange={(e) =>
                     setInviteForm({ ...inviteForm, email: e.target.value })

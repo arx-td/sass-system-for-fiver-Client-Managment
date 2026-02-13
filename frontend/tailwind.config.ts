@@ -50,7 +50,7 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        // Custom colors for CodeReve
+        // Custom colors for DEEPAXIS
         success: {
           DEFAULT: 'hsl(142, 76%, 36%)',
           foreground: 'hsl(0, 0%, 100%)',

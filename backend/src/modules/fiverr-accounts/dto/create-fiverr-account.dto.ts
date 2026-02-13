@@ -3,7 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateFiverrAccountDto {
   @ApiProperty({
-    example: 'CodeReve_Main',
+    example: 'DEEPAXIS_Main',
     description: 'Fiverr account name/username',
   })
   @IsString()
@@ -11,7 +11,7 @@ export class CreateFiverrAccountDto {
   accountName: string;
 
   @ApiPropertyOptional({
-    example: 'account@codereve.com',
+    example: 'account@deepaxis.com',
     description: 'Email associated with the Fiverr account',
   })
   @IsEmail({}, { message: 'Please provide a valid email' })

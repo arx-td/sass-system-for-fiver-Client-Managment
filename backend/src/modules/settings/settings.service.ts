@@ -110,11 +110,11 @@ export class SettingsService {
       const emailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #0f172a;">SMTP Configuration Test</h2>
-          <p>This is a test email from CodeReve Management System.</p>
+          <p>This is a test email from DEEPAXIS Management System.</p>
           <p>If you received this email, your SMTP configuration is working correctly!</p>
           <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
           <p style="color: #64748b; font-size: 12px;">
-            This email was sent from CodeReve Management System.
+            This email was sent from DEEPAXIS Management System.
           </p>
         </div>
       `;
@@ -135,7 +135,7 @@ export class SettingsService {
           body: JSON.stringify({
             from: smtpConfig.from || 'onboarding@resend.dev',
             to: [testEmail],
-            subject: 'CodeReve - Email Test',
+            subject: 'DEEPAXIS - Email Test',
             html: emailHtml,
           }),
         });
@@ -163,7 +163,7 @@ export class SettingsService {
           body: JSON.stringify({
             personalizations: [{ to: [{ email: testEmail }] }],
             from: { email: smtpConfig.from || smtpConfig.auth.user },
-            subject: 'CodeReve - Email Test',
+            subject: 'DEEPAXIS - Email Test',
             content: [{ type: 'text/html', value: emailHtml }],
           }),
         });
@@ -187,9 +187,9 @@ export class SettingsService {
         const apiKey = smtpConfig.auth.pass;
 
         const formData = new URLSearchParams();
-        formData.append('from', smtpConfig.from || `CodeReve <noreply@${domain}>`);
+        formData.append('from', smtpConfig.from || `DEEPAXIS <noreply@${domain}>`);
         formData.append('to', testEmail);
-        formData.append('subject', 'CodeReve - Email Test');
+        formData.append('subject', 'DEEPAXIS - Email Test');
         formData.append('html', emailHtml);
 
         const response = await fetch(`https://api.mailgun.net/v3/${domain}/messages`, {
@@ -230,7 +230,7 @@ export class SettingsService {
       await transporter.sendMail({
         from: smtpConfig.from || smtpConfig.auth.user,
         to: testEmail,
-        subject: 'CodeReve - SMTP Test Email',
+        subject: 'DEEPAXIS - SMTP Test Email',
         html: emailHtml,
       });
 
@@ -253,7 +253,7 @@ export class SettingsService {
 
     if (!setting) {
       return {
-        companyName: 'CodeReve',
+        companyName: 'DEEPAXIS',
         timezone: 'UTC',
         dateFormat: 'YYYY-MM-DD',
         notificationsEnabled: true,

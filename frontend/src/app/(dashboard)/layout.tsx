@@ -200,7 +200,7 @@ export default function DashboardLayout({
                   />
                 </svg>
               </div>
-              <span className="font-bold text-lg">CodeReve</span>
+              <span className="font-bold text-lg">DEEPAXIS</span>
             </div>
             <Button
               variant="ghost"
@@ -304,7 +304,7 @@ export default function DashboardLayout({
         {/* Footer */}
         <footer className="border-t py-4 px-4 lg:px-6">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} CodeReve. Internal Use Only.</p>
+            <p>&copy; {new Date().getFullYear()} DEEPAXIS. Internal Use Only.</p>
             <p>v1.0.0</p>
           </div>
         </footer>
