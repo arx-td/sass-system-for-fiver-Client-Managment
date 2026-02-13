@@ -341,7 +341,7 @@ export default function ProfilePage() {
                     className="bg-muted"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Email cannot be changed. Contact admin if needed.
+                    Email can be changed by Admin from User Management.
                   </p>
                 </div>
 

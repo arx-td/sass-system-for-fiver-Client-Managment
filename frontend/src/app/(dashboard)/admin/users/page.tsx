@@ -94,6 +94,7 @@ export default function UsersPage() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [editForm, setEditForm] = useState({
     name: '',
+    email: '',
     role: 'DEVELOPER' as UserRole,
   });
 
@@ -194,14 +195,15 @@ export default function UsersPage() {
     setSelectedUser(user);
     setEditForm({
       name: user.name,
+      email: user.email,
       role: user.role,
     });
     setEditDialogOpen(true);
   };
 
   const handleEdit = async () => {
-    if (!selectedUser || !editForm.name) {
-      toast.error('Name is required');
+    if (!selectedUser || !editForm.name || !editForm.email) {
+      toast.error('Name and email are required');
       return;
     }
 
@@ -393,13 +395,15 @@ export default function UsersPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="editEmail">Email (read-only)</Label>
+                <Label htmlFor="editEmail">Email</Label>
                 <Input
                   id="editEmail"
                   type="email"
-                  value={selectedUser?.email || ''}
-                  disabled
-                  className="bg-muted"
+                  placeholder="user@deepaxis.com"
+                  value={editForm.email}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, email: e.target.value })
+                  }
                 />
               </div>
               <div className="grid gap-2">

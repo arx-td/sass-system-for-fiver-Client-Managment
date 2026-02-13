@@ -417,6 +417,17 @@ export class UsersService {
       throw new ForbiddenException('You cannot change your own role');
     }
 
+    // Check email uniqueness if email is being changed
+    if (updateUserDto.email && updateUserDto.email.toLowerCase() !== user.email.toLowerCase()) {
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email: updateUserDto.email.toLowerCase() },
+      });
+      if (existingUser) {
+        throw new ConflictException('A user with this email already exists');
+      }
+      updateUserDto.email = updateUserDto.email.toLowerCase();
+    }
+
     const updatedUser = await this.prisma.user.update({
       where: { id },
       data: updateUserDto,
